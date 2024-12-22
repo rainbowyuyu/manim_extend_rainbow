@@ -1,6 +1,6 @@
 # rainbow_yu manim_extend 🐋✨
 
-__version__ = '0.1.1'
+__version__ = '0.1.2'
 
 __all__ = (
     "dec_bin",
@@ -9,7 +9,7 @@ __all__ = (
     "threed_vgp",
 )
 
-import dec_bin
-import matrix_yty
-import squ_tex
-import threed_vgp
+from dec_bin import *
+from matrix_yty import *
+from squ_tex import *
+from threed_vgp import *
