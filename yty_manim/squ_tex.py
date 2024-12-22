@@ -2,7 +2,7 @@
 
 from manim import *
 
-__version__ = "0.2.3"
+__version__ = "0.2.4"
 
 __all__ = (
     "typedict",
@@ -77,7 +77,7 @@ class SquTex(VGroup):
         self.tex = tex
         self.buff = buff
         self.arrange_direction = arrange_direction
-        self.distance = 0
+        self.distance = np.array((0.0, 0.0, 0.0))
 
         super().__init__()
         for i in range(len(tex)):
