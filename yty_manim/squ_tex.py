@@ -1,4 +1,5 @@
 # rainbow_yu manim_extend.squ_tex 🐋✨
+# 数据块等动画基本的类
 
 from manim import *
 
