@@ -3,8 +3,6 @@
 
 from yty_manim.basic_unit.squ_tex import *
 
-__version__ = "0.0.1"
-
 __all__ = (
     "Page",
 )
