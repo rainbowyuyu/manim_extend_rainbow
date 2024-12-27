@@ -3,6 +3,18 @@
 
 ---
 
+文件结构：
+manim_extend_rainbow  
+├──basic_unit  
+│ ├── squ_tex.py  
+│ ├── dec_bin.py  
+│ └── threed_vgp.py  
+└── application  
+  ├── matirx_yty.py  
+  └── page_replacement.py
+
+---
+
 # basic_unit
 
 ---
@@ -14,7 +26,7 @@
 
 ### SquTex
 
-![squ_tex](empty_url)
+![squ_tex](media/images/manim_extend_rainbow/TestSqu_ManimCE_v0.18.0.png)
 
 数据块， 继承于 :class:`~.VGroup` ，
 - 常用于数据结构的演示和二进制编码的演示，
@@ -35,7 +47,7 @@ from yty_manim.basic_unit.squ_tex import SquTex
 
 class TestSqu(Scene):
     def construct(self):
-        t = SquTex("yty - rainbow鱼")
+        t = SquTex("rainbow")
         self.play(t.animate_one_by_one(FadeIn , scale=1.5))
         self.wait()
 ```

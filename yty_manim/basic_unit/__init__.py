@@ -6,6 +6,6 @@ __all__ = (
     "threed_vgp",
 )
 
-from dec_bin import *
-from squ_tex import *
-from threed_vgp import *
+from .dec_bin import *
+from .squ_tex import *
+from .threed_vgp import *

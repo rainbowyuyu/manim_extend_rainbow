@@ -5,5 +5,5 @@ __all__ = (
     "page_replacement"
 )
 
-from matrix_yty import *
-from page_replacement import *
+from .matrix_yty import *
+from .page_replacement import *

@@ -49,7 +49,7 @@ class SquTex(VGroup):
 
     >>> class TestSqu(Scene):
     >>>     def construct(self):
-    >>>         t = SquTex("yty - rainbow鱼")
+    >>>         t = SquTex("rainbow鱼")
     >>>         self.play(t.animate_one_by_one(FadeIn , scale=1.5))
     >>>         self.wait()
 
@@ -57,7 +57,7 @@ class SquTex(VGroup):
 
     >>> class TestSqu(Scene):
     >>>     def construct(self):
-    >>>         t = SquTex("yty - rainbow鱼",**typedict["default_type"])
+    >>>         t = SquTex("rainbow鱼",**typedict["default_type"])
     >>>         arg = (1,3,4)
     >>>         self.add(t)
     >>>         self.wait()
@@ -203,7 +203,7 @@ class SquTexSlide(SquTex):
 
     >>> class TestSqu(Scene):
     >>>     def construct(self):
-    >>>         s = SquTexSlide("yty123")
+    >>>         s = SquTexSlide("rainbow鱼")
     >>>         self.add(s)
     >>>         self.wait()
     >>>         for i in range(len(s)):
@@ -214,7 +214,7 @@ class SquTexSlide(SquTex):
 
     >>> class TestFade(Scene):
     >>>     def construct(self):
-    >>>         a = SquTexSlide("yty123")
+    >>>         a = SquTexSlide("rainbow鱼")
     >>>         self.add(a)
     >>>         self.play(*a.slide_fade(2))
 

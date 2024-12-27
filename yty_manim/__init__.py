@@ -7,5 +7,6 @@ __all__ = (
     "application",
 )
 
-from basic_unit import *
-from application import *
+from manim import *
+from .basic_unit import *
+from .application import *
