@@ -47,9 +47,9 @@ class SquTex(VGroup):
 
     创建数据块:
 
-    >>> class TestSqu(Scene):
+    >>> class SquTexCreate(Scene):
     >>>     def construct(self):
-    >>>         t = SquTex("rainbow鱼")
+    >>>         t = SquTex("rainbow")
     >>>         self.play(t.animate_one_by_one(FadeIn , scale=1.5))
     >>>         self.wait()
 
@@ -57,7 +57,7 @@ class SquTex(VGroup):
 
     >>> class TestSqu(Scene):
     >>>     def construct(self):
-    >>>         t = SquTex("rainbow鱼",**typedict["default_type"])
+    >>>         t = SquTex("rainbow",**typedict["default_type"])
     >>>         arg = (1,3,4)
     >>>         self.add(t)
     >>>         self.wait()

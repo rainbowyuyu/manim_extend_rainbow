@@ -22,11 +22,11 @@ manim_extend_rainbow
 ## squ_tex.py
 包含两个类 `SquTex` 和 `SquTexSlide`
 
+![squ_tex](media/images/manim_extend_rainbow/SquTexIndex_ManimCE_v0.18.0.png)
+
 ---
 
 ### SquTex
-
-![squ_tex](media/images/manim_extend_rainbow/TestSqu_ManimCE_v0.18.0.png)
 
 数据块， 继承于 :class:`~.VGroup` ，
 - 常用于数据结构的演示和二进制编码的演示，
@@ -51,3 +51,7 @@ class TestSqu(Scene):
         self.play(t.animate_one_by_one(FadeIn , scale=1.5))
         self.wait()
 ```
+
+<video width="640" height="360" controls>
+  <source src="media/videos/manim_extend_rainbow/1080p60/SquTexCreate.mp4" type="video/mp4">
+</video>
