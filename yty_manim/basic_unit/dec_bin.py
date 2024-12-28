@@ -37,7 +37,7 @@ class BinNumber:
 
     二进制转换:
 
-    >>> from yty_manim.dec_bin import *
+    >>> from yty_manim.basic_unit.dec_bin import BinNumber
 
     #定义十进制数转换二进制数
     >>> test_bin = BinNumber(-0.2, 8, 1, True)

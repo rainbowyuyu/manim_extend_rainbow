@@ -55,7 +55,7 @@ class SquTex(VGroup):
 
     数据块样式改变:
 
-    >>> class TestSqu(Scene):
+    >>> class SquTexChangeStyle(Scene):
     >>>     def construct(self):
     >>>         t = SquTex("rainbow",**typedict["default_type"])
     >>>         arg = (1,3,4)
@@ -194,16 +194,16 @@ class SquTexSlide(SquTex):
 
     - 在数据块的基础上添加滑动的动画，
     - 使用 :method:`slide` 做基本的位置变化滑动
-    - 使用 :method:`slide_fade_from_ori` 做数据块内部的循环滑动，并且头尾缓入缓出
+    - 使用 :method:`slide_fade` 做数据块内部或外部添加的循环滑动，并且头尾缓入缓出
 
     Examples
     --------
 
     基础滑动 :method:`slide`:
 
-    >>> class TestSqu(Scene):
+    >>> class SquTexSlideBasic(Scene):
     >>>     def construct(self):
-    >>>         s = SquTexSlide("rainbow鱼")
+    >>>         s = SquTexSlide("rainbow")
     >>>         self.add(s)
     >>>         self.wait()
     >>>         for i in range(len(s)):
@@ -212,15 +212,15 @@ class SquTexSlide(SquTex):
 
     循环滑动头尾缓入缓出 :method:`slide_fade`:
 
-    >>> class TestFade(Scene):
+    >>> class SquTexSlideFadeRotate(Scene):
     >>>     def construct(self):
-    >>>         a = SquTexSlide("rainbow鱼")
+    >>>         a = SquTexSlide("rainbow")
     >>>         self.add(a)
     >>>         self.play(*a.slide_fade(2))
 
     外部添加滑动头尾缓入缓出结合应用 :method:`slide_fade`:
 
-    >>> class TestFade(Scene):
+    >>> class SquTexSlideFadeAddition(Scene):
     >>>     def construct(self):
     >>>         a = SquTexSlide("yty123")
     >>>         b = SquTex("ab")

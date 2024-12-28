@@ -1,16 +1,27 @@
 # rainbow_yu🐋✨
-在manim基础上进行的动画改进
+在manim基础上进行的动画控制和运算的改进或添加，
+基础的manim知识请参考[manim](https://github.com/manimCommunity/manim)
 
 ---
 
-文件结构：
+使用方法：
+```bash
+git clone https://github.com/rainbowyuyu/manim_extend_rainbow
+cd ./manim_extend_rainbow
+pip install -r requirements.txt
+```
+
+---
+
+文件结构：  
 manim_extend_rainbow  
+├──examples.ipynb   
 ├──basic_unit  
 │ ├── squ_tex.py  
 │ ├── dec_bin.py  
 │ └── threed_vgp.py  
 └── application  
-  ├── matirx_yty.py  
+  ├── matrix_yty.py  
   └── page_replacement.py
 
 ---
@@ -39,19 +50,79 @@ manim_extend_rainbow
 - 使用 :method:`add_bracket` 将数据块中所有负数的数字都加上括号
 
 使用示例：
-1. 创建数据块:
 
 ```python
 from manim import *
 from yty_manim.basic_unit.squ_tex import SquTex
 
-class TestSqu(Scene):
+class SquTexCreate(Scene):
     def construct(self):
         t = SquTex("rainbow")
         self.play(t.animate_one_by_one(FadeIn , scale=1.5))
         self.wait()
 ```
 
-<video width="640" height="360" controls>
-  <source src="media/videos/manim_extend_rainbow/1080p60/SquTexCreate.mp4" type="video/mp4">
-</video>
+---
+
+### SquTexSlide
+
+演示滑动的数据块， 继承于 :class:`~.SquTex` ，
+- 在数据块的基础上添加滑动的动画，
+- 使用 :method:`slide` 做基本的位置变化滑动
+- 使用 :method:`slide_fade` 做数据块内部或外部添加的循环滑动，并且头尾缓入缓出
+
+使用示例：
+
+```python
+from manim import *
+from yty_manim.basic_unit.squ_tex import SquTexSlide
+
+class SquTexSlideBasic(Scene):
+    def construct(self):
+        s = SquTexSlide("rainbow")
+        self.add(s)
+        self.wait()
+        for i in range(len(s)):
+            self.play(*s.slide(-1))
+        self.wait()
+```
+
+---
+
+## dec_bin.py
+包含一个类 `BinNumber`
+
+---
+
+### BinNumber
+
+数据块中二进制数
+通过记录二进制数的符号位，整数部分，小数部分，
+将十进制数转换为理想的二进制数格式，
+并且能对二进制数进行一些处理，
+
+- 先用空值对类对象进行赋值，输入 bin_num 后使用 :method:`bin2dec` 将二进制数类对象转化为一个十进制数，
+- 使用 :method:`standardize` 将二进制数类对象进行格式标准化，
+- 使用 :method:`ex_one` 将二进制数类对象转化为其反码，
+- 使用 :method:`ex_two` 将二进制数类对象转化为其补码，
+- 使用 :method:`information` 显示该二进制数的所有参数信息，
+- 使用 :method:`cal_check` 检验在算法运算时是否会超出精度，
+- 使用计算方法重载时，格式跟随第一目继承。
+
+使用示例：
+
+```python
+from yty_manim.basic_unit.dec_bin import BinNumber
+
+#定义十进制数转换二进制数
+test_bin = BinNumber(-0.2, 8, 1, True)
+print(test_bin)
+print(test_bin.ex_one())
+print(test_bin.ex_two())
+```
+
+---
+
+# application
+
+pass
