@@ -153,7 +153,7 @@ print(test_bin.ex_two())
 - 获取结果信息 :method:`get_result_inform`，
 - 计算过程组 :method:`cal_progress_times`，
 - 计算结果组 :method:`cal_result_addition`，
-- 
+
 ---
 ### MatrixMath
 行列式计算， 继承于 :class:`~.MatrixCal` ，
