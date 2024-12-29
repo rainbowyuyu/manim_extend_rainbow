@@ -81,7 +81,8 @@ class MatrixCal(VGroup):
 
     常用于矩阵计算的演示
     支持生成负数带括号的矩阵 :method:`neg_with_brackets`
-    矩阵加法计算 :method:`addition_mat`
+    获取矩阵行 :method:`get_row`
+    获取矩阵列 :method:`get_column`
 
     Examples
     --------

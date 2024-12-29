@@ -91,6 +91,7 @@ class SquTexSlideBasic(Scene):
 
 ## dec_bin.py
 包含一个类 `BinNumber`
+- 目前还没留和其他动画的接口，寒假完善
 
 ---
 
@@ -125,4 +126,41 @@ print(test_bin.ex_two())
 
 # application
 
-pass
+---
+
+## matrix_yty.py
+包含基类 `MatrixCal` 和 实际计算 `MatrixDet` 和 `MatrixMath`
+![matrix_example](media/images/manim_extend_rainbow/MatrixExample_ManimCE_v0.18.0.png)
+
+---
+### MatrixCal
+可绝对控制元素的矩阵类， 继承于 :class:`~.VGroup` ，
+
+- 常用于矩阵计算的演示
+- 支持生成负数带括号的矩阵 :method:`neg_with_brackets`
+- 获取矩阵行 :method:`get_row`
+- 获取矩阵列 :method:`get_column`
+
+---
+### MatrixDet
+行列式计算， 继承于 :class:`~.MatrixCal` ，
+
+- 常用于行列式计算的演示，
+- 支持扩展成计算演示的行列式 :method:`det_mat`，
+- 自适应大小 :method:`set_scale_fitness`，
+- 获取计算过程信息 :method:`get_process_inform`，
+- 获取结果信息 :method:`get_result_inform`，
+- 计算过程组 :method:`cal_progress_times`，
+- 计算结果组 :method:`cal_result_addition`，
+- 
+---
+### MatrixDet
+行列式计算， 继承于 :class:`~.MatrixCal` ，
+
+- 常用于行列式计算的演示，
+- 支持扩展成计算演示的行列式 :method:`det_mat`，
+- 自适应大小 :method:`set_scale_fitness`，
+- 获取计算过程信息 :method:`get_process_inform`，
+- 获取结果信息 :method:`get_result_inform`，
+- 计算过程组 :method:`cal_progress_times`，
+- 计算结果组 :method:`cal_result_addition`，
