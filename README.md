@@ -155,7 +155,7 @@ print(test_bin.ex_two())
 - 计算结果组 :method:`cal_result_addition`，
 - 
 ---
-### MatrixDet
+### MatrixMath
 行列式计算， 继承于 :class:`~.MatrixCal` ，
 
 - 常用于行列式计算的演示，
