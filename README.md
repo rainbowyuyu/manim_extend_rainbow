@@ -130,6 +130,7 @@ print(test_bin.ex_two())
 
 ## matrix_yty.py
 包含基类 `MatrixCal` 和 实际计算 `MatrixDet` 和 `MatrixMath`
+
 ![matrix_example](media/images/manim_extend_rainbow/MatrixExample_ManimCE_v0.18.0.png)
 
 ---
