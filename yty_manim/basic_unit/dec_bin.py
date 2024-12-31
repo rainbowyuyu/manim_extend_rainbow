@@ -1,3 +1,9 @@
+# rainbow_yu manim_extend.basic_unit.dec_bin 🐋✨
+# 二进制基本的类
+
+from yty_manim.basic_unit.squ_tex import *
+
+
 class BinNumber:
     """
     数据块中二进制数
@@ -186,7 +192,7 @@ class BinNumber:
         dec_float = sum(int(bit) * (2 ** -i) for i, bit in enumerate(float_part, start=1)) if float_part != '0' else 0
 
         self.dec_num = dec_int + dec_float
-        if '1' in int_part[0:self.symbolic_bit+1]:
+        if '1' in int_part[0:self.symbolic_bit + 1]:
             self.dec_num *= -1
 
         return self.dec_num
@@ -256,6 +262,28 @@ class BinNumber:
             result_dec = self.dec_num / other.dec_num
             return BinNumber(result_dec, self.precision, self.symbolic_bit, self.is_split)
         raise TypeError(f"Unsupported operand type(s) for /: 'BinNumber' and '{type(other).__name__}'")
+
+
+class Bin4SquTex(BinNumber, SquTexSlide):
+    """
+    二进制的manim接口
+    继承于 :class:`~.BinNumber` 和 :class:`~.SquTexSlide`，
+
+    Notes
+    -----
+
+    - 常用于数据结构的演示和二进制转换的演示，
+    -  :method:``
+
+    Examples
+    --------
+"""
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.change_color()
+
+    def color_logic(self):
+        pass
 
 
 if __name__ == '__main__':
