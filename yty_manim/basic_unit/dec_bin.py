@@ -281,6 +281,7 @@ class Bin4SquTex(BinNumber, SquTexSlide):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.change_color()
+        pass
 
     def color_logic(self):
         pass
