@@ -13,6 +13,25 @@ __all__ = (
 
 
 class Page(VGroup):
+    """
+    页面，
+    继承于 :class:`~.VGroup` ，
+
+    Notes
+    -----
+
+    - 常用于操作系统中页面置换算法的演示
+
+    Examples
+    --------
+
+    创建页面:
+
+    >>> class PageTest(Scene):
+    >>>     def construct(self):
+    >>>         p = Page([7,0,1,2,0,3,0,4,2,3,0,3,2,1,2,0,1,7,0,1," "],7)
+    >>>         self.add(p)
+    """
     def __init__(
             self,
             page_lst: list,
@@ -61,6 +80,22 @@ class Page(VGroup):
 
 
 class PageReplacement(Page):
+    """
+    页面置换，
+    继承于 :class:`~.Page` ，
+
+    Notes
+    -----
+
+    - 通过保留接口完成页面置换算法每步演示
+
+    Examples
+    --------
+
+    页面置换步进:
+
+
+    """
     def __init__(
             self,
             page_lst: list,
@@ -70,6 +105,17 @@ class PageReplacement(Page):
         self.page_frame_lst = []
 
     def cal_func(self, step):
+        """
+        页面置换算法接口，继承后重写课改变页面置换搜索逻辑，
+        下面给出几种经典的页面置换算法继承：
+         - OPT
+         - LRU
+         - FIFO
+         - CLOCK
+         - 改进型CLOCK
+
+        :param step: 当前步骤
+        """
         pass
 
     def step_on(self, step):
@@ -77,6 +123,9 @@ class PageReplacement(Page):
 
 
 class OptPageReplacement(PageReplacement):
+    """
+    OPT页面置换算法
+    """
     def cal_func(self, step):
         def get_opt(step):
             for i in range(step + 1, len(self.page_lst)):
@@ -88,7 +137,7 @@ class OptPageReplacement(PageReplacement):
             self.page_frame_lst.append(get_opt(step))
             return step, get_opt(step)
         else:
-            for j in range(3):
+            for j in range(self.page_frame_num):
                 if self.page_lst[step] == self.page_lst[self.page_frame_lst[j]]:
                     self.page_frame_lst[j] = get_opt(step)
                     return j, get_opt(step)
