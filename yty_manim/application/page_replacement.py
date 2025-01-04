@@ -78,7 +78,6 @@ class Page(VGroup):
             opt_squ = Square(side_length=1).set_color(self.color_lst[i]).move_to(self.pages[i]).scale(self.one_step[1])
             self.opt_frame.add(opt_squ)
 
-
     def _add_to_page(self):
         self.add(
             self.page_highlight,
