@@ -29,9 +29,10 @@ class Page(VGroup):
 
     >>> class PageTest(Scene):
     >>>     def construct(self):
-    >>>         p = Page([7,0,1,2,0,3,0,4,2,3,0,3,2,1,2,0,1,7,0,1," "],7)
+    >>>         p = Page([7,0,1,2,0,3,0,4,2,3,0,3,2,1,2,0,1,7,0,1," "],6)
     >>>         self.add(p)
     """
+
     def __init__(
             self,
             page_lst: list,
@@ -45,7 +46,7 @@ class Page(VGroup):
         self.one_step = one_step
 
         if color_lst is None:
-            color_lst = [RED, ORANGE, YELLOW, GREEN, TEAL, BLUE, PURPLE]
+            color_lst = [RED, ORANGE, GREEN, TEAL, BLUE, PURPLE]
         self.color_lst = color_lst
 
         if page_frame_num <= len(self.color_lst):
@@ -78,7 +79,16 @@ class Page(VGroup):
         self.page_highlight = Square(side_length=1).set_color(YELLOW).move_to(self.pages[0]).scale(self.one_step[1])
 
     def _add_to_page(self):
-        self.add(self.pages, self.page_frame, self.opt_frame, self.page_highlight)
+        """
+        添加的顺序就是最后呈现的层次，所以单独写一个内置便于置层
+        :return: None
+        """
+        self.add(
+            self.page_highlight,
+            self.pages,
+            self.page_frame,
+            self.opt_frame,
+        )
 
 
 class PageReplacement(Page):
@@ -98,6 +108,7 @@ class PageReplacement(Page):
 
 
     """
+
     def __init__(
             self,
             page_lst: list,
@@ -160,6 +171,7 @@ class OptPageReplacement(PageReplacement):
     """
     OPT页面置换算法
     """
+
     def cal_func(self, step):
         def get_opt(step):
             for i in range(step + 1, len(self.page_lst)):
@@ -167,7 +179,7 @@ class OptPageReplacement(PageReplacement):
                     return i
             return len(self.page_lst) - 1
 
-        if len(self.page_lst) < self.page_frame_num:
+        if len(self.page_frame_lst) < self.page_frame_num:
             self.page_frame_lst.append(get_opt(step))
             return step, get_opt(step)
         else:
@@ -175,3 +187,9 @@ class OptPageReplacement(PageReplacement):
                 if self.page_lst[step] == self.page_lst[self.page_frame_lst[j]]:
                     self.page_frame_lst[j] = get_opt(step)
                     return j, get_opt(step)
+
+        max_opt_id = self.page_frame_lst.index(max(self.page_frame_lst))
+        new_opt = get_opt(step)
+        self.page_frame_lst[max_opt_id] = new_opt
+
+        return max_opt_id, new_opt
