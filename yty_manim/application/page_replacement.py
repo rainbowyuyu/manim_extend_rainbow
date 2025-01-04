@@ -75,8 +75,10 @@ class Page(VGroup):
             opt_squ = Square(side_length=1).set_color(self.color_lst[i]).move_to(self.pages[i]).scale(self.one_step[1])
             self.opt_frame.add(opt_squ)
 
+        self.page_highlight = Square(side_length=1).set_color(YELLOW).move_to(self.pages[0]).scale(self.one_step[1])
+
     def _add_to_page(self):
-        self.add(self.pages, self.page_frame, self.opt_frame)
+        self.add(self.pages, self.page_frame, self.opt_frame, self.page_highlight)
 
 
 class PageReplacement(Page):
@@ -118,8 +120,40 @@ class PageReplacement(Page):
         """
         pass
 
-    def step_on(self, step):
-        pass
+    def _step_on(self, step):
+        """
+        步进更新参数
+        :param step: 当前步骤
+        :return: None
+        """
+        self.frame_expect, self.page_expect = self.cal_func(step)
+
+    def slide_frame(self, step):
+        """
+        滑动页框
+        :param step: 当前步骤
+        :return: all_the_animate
+        """
+        all_the_animate = [
+            self.page_frame.animate.shift(RIGHT * self.one_step[0] * self.one_step[1]),
+            self.page_highlight.animate.move_to(self.pages[step])
+        ]
+        return all_the_animate
+
+    def update_frame(self, step):
+        """
+            更新页框
+            :param step: 当前步骤
+            :return: all_the_animate
+        """
+        self._step_on(step)
+        all_the_animate = [
+            self.page_highlight.animate.move_to(self.page_frame[self.frame_expect]),
+            Indicate(self.opt_frame[self.frame_expect]),
+            self.page_frame.animate.change_word_in_text(self.frame_expect, self.page_lst[self.frame_expect], 0.5),
+            self.opt_frame[self.frame_expect].animate.move_to(self.pages[self.page_expect]),
+        ]
+        return all_the_animate
 
 
 class OptPageReplacement(PageReplacement):
