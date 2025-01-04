@@ -70,19 +70,16 @@ class Page(VGroup):
         ).scale(0.45).next_to(self.pages, DOWN, buff=0)
         self.page_frame.shift(LEFT * self.one_step[0] * self.one_step[1] * (len(self.page_lst) / 2))
 
+        self.page_highlight = Square(side_length=1).set_color(YELLOW).move_to(self.pages[0]).scale(self.one_step[1])
+
         self.opt_frame = VGroup()
         for i in range(self.page_frame_num):
             self.page_frame.change_square(i, color=self.color_lst[i])
             opt_squ = Square(side_length=1).set_color(self.color_lst[i]).move_to(self.pages[i]).scale(self.one_step[1])
             self.opt_frame.add(opt_squ)
 
-        self.page_highlight = Square(side_length=1).set_color(YELLOW).move_to(self.pages[0]).scale(self.one_step[1])
 
     def _add_to_page(self):
-        """
-        添加的顺序就是最后呈现的层次，所以单独写一个内置便于置层
-        :return: None
-        """
         self.add(
             self.page_highlight,
             self.pages,
