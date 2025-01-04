@@ -120,14 +120,6 @@ class PageReplacement(Page):
         """
         pass
 
-    def _step_on(self, step):
-        """
-        步进更新参数
-        :param step: 当前步骤
-        :return: None
-        """
-        self.frame_expect, self.page_expect = self.cal_func(step)
-
     def slide_frame(self, step):
         """
         滑动页框
@@ -139,6 +131,14 @@ class PageReplacement(Page):
             self.page_highlight.animate.move_to(self.pages[step])
         ]
         return all_the_animate
+
+    def _step_on(self, step):
+        """
+        步进更新参数
+        :param step: 当前步骤
+        :return: None
+        """
+        self.frame_expect, self.page_expect = self.cal_func(step)
 
     def update_frame(self, step):
         """
