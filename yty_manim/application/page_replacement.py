@@ -82,6 +82,8 @@ class Page(VGroup):
 
         self.page_highlight = Square(side_length=1).set_color(YELLOW).move_to(self.pages[0]).scale(self.one_step[1])
 
+        self.missing_rate = ValueTracker(0)
+
     def _add_to_page(self):
         self.add(
             self.pages,
