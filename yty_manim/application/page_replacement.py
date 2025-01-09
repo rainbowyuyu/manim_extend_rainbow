@@ -85,6 +85,7 @@ class Page(VGroup):
 
         t = Text("缺页率",font=text_font[0]).scale(0.75)
         self.missing_rate = Variable(0, t).set_color_by_gradient(gradient_dict["favourite"])
+        self.missing_rate.scale(0.75).to_edge(RIGHT,buff=1).shift(UP*0.5)
         self.missing_tracker = self.missing_rate.tracker
 
     def _add_to_page(self):

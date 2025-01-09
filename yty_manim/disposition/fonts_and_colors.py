@@ -4,7 +4,7 @@ from manim import *
 
 # 字体列表
 text_font = [
-    '汉仪中圆简'
+    '汉仪中圆简',
     '时尚中黑简体',
 ]
 
