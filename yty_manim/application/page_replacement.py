@@ -83,9 +83,9 @@ class Page(VGroup):
 
         self.page_highlight = Square(side_length=1).set_color(YELLOW).move_to(self.pages[0]).scale(self.one_step[1])
 
-        t = Text("缺页率",font=text_font[0]).scale(0.75)
+        t = Text("缺页率", font=text_font[0]).scale(0.75)
         self.missing_rate = Variable(0, t).set_color_by_gradient(gradient_dict["favourite"])
-        self.missing_rate.scale(0.75).to_edge(RIGHT,buff=1).shift(UP*0.5)
+        self.missing_rate.scale(0.75).to_edge(RIGHT, buff=1).shift(UP*0.5)
         self.missing_tracker = self.missing_rate.tracker
 
     def _add_to_page(self):
@@ -94,7 +94,7 @@ class Page(VGroup):
             self.page_frame,
             # self.opt_frame,
             self.page_highlight,
-            self.missing_rate
+            self.missing_rate,
         )
         # 至于顶层
         self.page_highlight.z_index = 5
