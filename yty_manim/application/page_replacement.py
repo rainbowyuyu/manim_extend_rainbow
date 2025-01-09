@@ -49,6 +49,7 @@ class Page(VGroup):
 
         self.page_lst = page_lst
         self.one_step = one_step
+        self.loss_page = 0
 
         if color_lst is None:
             color_lst = [RED, ORANGE, GREEN, TEAL, BLUE, PURPLE]
@@ -146,7 +147,9 @@ class PageReplacement(Page):
          - CLOCK
          - 改进型CLOCK
          - ……
-        所有算法需按顺序返回选择的页框和选择的页面两个值
+        所有算法需按顺序返回选择的页框和选择的页面两个值，
+        并且做出相应的缺页数改变，
+        详细看经典算法的示例。
         :param step: 当前步骤
         :returns: 选择的页框，选择的页面
         """
@@ -182,10 +185,14 @@ def step_on(
         run_time=run_time,
     )
     scene.wait(run_time)
-    scene.play(page.page_highlight.animate.move_to(page.page_frame[page.frame_expect]),run_time=run_time)
-    scene.play(Indicate(page.opt_frame[page.frame_expect]),run_time=run_time)
-    scene.play(page.page_frame.animate.change_word_in_text(page.frame_expect, page.page_lst[step], 0.5),run_time=run_time)
-    scene.play(page.opt_frame[page.frame_expect].animate.move_to(page.pages[page.page_expect]))
+    scene.play(page.page_highlight.animate.move_to(page.page_frame[page.frame_expect]), run_time=run_time)
+    scene.play(Indicate(page.opt_frame[page.frame_expect]), run_time=run_time)
+    scene.play(page.page_frame.animate.change_word_in_text(page.frame_expect, page.page_lst[step], 0.5), run_time=run_time)
+    scene.play(
+        page.opt_frame[page.frame_expect].animate.move_to(page.pages[page.page_expect]),
+        page.missing_tracker.animate.set_value(page.loss_page/(step+1)),
+        run_time=run_time,
+    )
     scene.wait(run_time)
 
 
@@ -195,25 +202,30 @@ class OptPageReplacement(PageReplacement):
     """
 
     def cal_func(self, step):
+        # 获取opt
         def get_opt(step):
             for i in range(step + 1, len(self.page_lst)):
                 if self.page_lst[step] == self.page_lst[i]:
                     return i
             return len(self.page_lst) - 1
 
+        # 页面未填满
         if len(self.page_frame_lst) < self.page_frame_num:
             self.page_frame_lst.append(get_opt(step))
+            self.loss_page += 1
             return step, get_opt(step)
+        # 已有页面
         else:
             for j in range(self.page_frame_num):
                 if self.page_lst[step] == self.page_lst[self.page_frame_lst[j]]:
                     self.page_frame_lst[j] = get_opt(step)
                     return j, get_opt(step)
 
+        # 缺页中断
         max_opt_id = self.page_frame_lst.index(max(self.page_frame_lst))
         new_exp = get_opt(step)
         self.page_frame_lst[max_opt_id] = new_exp
-
+        self.loss_page += 1
         return max_opt_id, new_exp
 
 
@@ -231,6 +243,7 @@ class LruPageReplacement(PageReplacement):
 
         if len(self.page_frame_lst) < self.page_frame_num:
             self.page_frame_lst.append(get_lru(step))
+            self.loss_page += 1
             return step, get_lru(step)
         else:
             for j in range(self.page_frame_num):
@@ -241,7 +254,7 @@ class LruPageReplacement(PageReplacement):
         min_opt_id = self.page_frame_lst.index(min(self.page_frame_lst))
         new_exp = get_lru(step)
         self.page_frame_lst[min_opt_id] = new_exp
-
+        self.loss_page += 1
         return min_opt_id, new_exp
 
 
@@ -250,4 +263,15 @@ class FifoPageReplacement(PageReplacement):
     FIFO页面置换算法
     """
     def cal_func(self, step):
-        pass
+        if len(self.page_frame_lst) < self.page_frame_num:
+            self.page_frame_lst.append(step)
+            self.loss_page += 1
+            return step, step
+        else:
+            for j in range(self.page_frame_num):
+                if self.page_lst[step] == self.page_lst[self.page_frame_lst[j]]:
+                    self.page_frame_lst[j] = step
+                    return j, step
+
+        self.loss_page += 1
+        return step % 3, step
