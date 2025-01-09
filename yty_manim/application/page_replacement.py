@@ -7,6 +7,7 @@ from manim import *
 __all__ = (
     "Page",
     "PageReplacement",
+    "step_on",
     "OptPageReplacement",
     # 保留的接口，可以写入其他页面置换算法
 )
@@ -82,10 +83,10 @@ class Page(VGroup):
         self.add(
             self.pages,
             self.page_frame,
-            self.opt_frame,
+            # self.opt_frame,
             self.page_highlight,
         )
-        self.page_highlight.z_index = 100
+        self.page_highlight.z_index = 5
 
 
 class PageReplacement(Page):
@@ -113,6 +114,8 @@ class PageReplacement(Page):
     ):
         super().__init__(page_lst, **kwargs)
         self.page_frame_lst = []
+        self.frame_expect = 0
+        self.page_expect = 0
 
     def cal_func(self, step):
         """
@@ -128,19 +131,7 @@ class PageReplacement(Page):
         """
         pass
 
-    def slide_frame(self, step):
-        """
-        滑动页框
-        :param step: 当前步骤
-        :return: all_the_animate
-        """
-        all_the_animate = [
-            self.page_frame.animate.shift(RIGHT * self.one_step[0] * self.one_step[1]),
-            self.page_highlight.animate.move_to(self.pages[step]),
-        ]
-        return all_the_animate
-
-    def _step_on(self, step):
+    def update_expect(self, step):
         """
         步进更新参数
         :param step: 当前步骤
@@ -148,20 +139,33 @@ class PageReplacement(Page):
         """
         self.frame_expect, self.page_expect = self.cal_func(step)
 
-    def update_frame(self, step):
-        """
-            更新页框
-            :param step: 当前步骤
-            :return: all_the_animate
-        """
-        self._step_on(step)
-        all_the_animate = [
-            self.page_highlight.animate.move_to(self.page_frame[self.frame_expect]),
-            Indicate(self.opt_frame[self.frame_expect]),
-            self.page_frame.animate.change_word_in_text(self.frame_expect, self.page_lst[self.frame_expect], 0.5),
-            self.opt_frame[self.frame_expect].animate.move_to(self.pages[self.page_expect]),
-        ]
-        return all_the_animate
+
+def step_on(
+        scene: Scene,
+        page: PageReplacement,
+        step,
+        run_time=1,
+):
+    """
+    步进函数
+    :param scene: 场景接口，一般为self
+    :param page: 页面
+    :param step: 当前步骤
+    :param run_time: 运行时间
+    :return: None
+    """
+    page.update_expect(step)
+    scene.play(
+        page.page_frame.animate.shift(RIGHT * page.one_step[0] * page.one_step[1]),
+        page.page_highlight.animate.move_to(page.pages[step]),
+        run_time=run_time,
+    )
+    scene.wait(run_time)
+    scene.play(page.page_highlight.animate.move_to(page.page_frame[page.frame_expect]),run_time=run_time)
+    scene.play(Indicate(page.opt_frame[page.frame_expect]),run_time=run_time)
+    scene.play(page.page_frame.animate.change_word_in_text(page.frame_expect, page.page_lst[step], 0.5),run_time=run_time)
+    scene.play(page.opt_frame[page.frame_expect].animate.move_to(page.pages[page.page_expect]))
+    scene.wait(run_time)
 
 
 class OptPageReplacement(PageReplacement):
@@ -190,3 +194,4 @@ class OptPageReplacement(PageReplacement):
         self.page_frame_lst[max_opt_id] = new_opt
 
         return max_opt_id, new_opt
+
