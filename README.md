@@ -16,6 +16,8 @@ pip install -r requirements.txt
 文件结构：  
 manim_extend_rainbow  
 ├──examples.ipynb   
+├──disposition  
+│ └── fonts_and_colors.py  
 ├──basic_unit  
 │ ├── squ_tex.py  
 │ ├── dec_bin.py  

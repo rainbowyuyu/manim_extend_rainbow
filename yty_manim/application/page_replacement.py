@@ -2,6 +2,7 @@
 # 为操作系统中的页面置换算法动画服务的类
 
 from yty_manim.basic_unit.squ_tex import *
+from yty_manim.disposition.fonts_and_colors import *
 from manim import *
 
 __all__ = (
@@ -10,6 +11,7 @@ __all__ = (
     "step_on",
     "OptPageReplacement",
     "LruPageReplacement",
+    "FifoPageReplacement",
     # 保留的接口，可以写入其他页面置换算法
 )
 
@@ -223,7 +225,7 @@ class LruPageReplacement(PageReplacement):
             self.page_frame_lst.append(get_lru(step))
             return step, get_lru(step)
         else:
-            for j in range(3):
+            for j in range(self.page_frame_num):
                 if self.page_lst[step] == self.page_lst[self.page_frame_lst[j]]:
                     self.page_frame_lst[j] = get_lru(step)
                     return j, get_lru(step)
@@ -233,3 +235,11 @@ class LruPageReplacement(PageReplacement):
         self.page_frame_lst[min_opt_id] = new_exp
 
         return min_opt_id, new_exp
+
+
+class FifoPageReplacement(PageReplacement):
+    """
+    FIFO页面置换算法
+    """
+    def cal_func(self, step):
+        pass
