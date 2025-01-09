@@ -9,6 +9,7 @@ __all__ = (
     "PageReplacement",
     "step_on",
     "OptPageReplacement",
+    "LruPageReplacement",
     # 保留的接口，可以写入其他页面置换算法
 )
 
@@ -102,8 +103,16 @@ class PageReplacement(Page):
     Examples
     --------
 
-    页面置换步进:
+    OPT页面置换步进:
 
+    >>> class PageOPT(Scene):
+    >>>     def construct(self):
+    >>>         input_lst = [7,0,1,2,0,3,0,4,2,3,0,3,2,1,2,0,1,7,0,1," "]
+    >>>         p = OptPageReplacement(input_lst,page_frame_num=3)
+    >>>         self.add(p)
+    >>>         self.wait()
+    >>>         for i in range(len(input_lst)-1):
+    >>>             step_on(self,p,i)
 
     """
 
@@ -126,8 +135,10 @@ class PageReplacement(Page):
          - FIFO
          - CLOCK
          - 改进型CLOCK
-
+         - ……
+        所有算法需按顺序返回选择的页框和选择的页面两个值
         :param step: 当前步骤
+        :returns: 选择的页框，选择的页面
         """
         pass
 
@@ -190,8 +201,35 @@ class OptPageReplacement(PageReplacement):
                     return j, get_opt(step)
 
         max_opt_id = self.page_frame_lst.index(max(self.page_frame_lst))
-        new_opt = get_opt(step)
-        self.page_frame_lst[max_opt_id] = new_opt
+        new_exp = get_opt(step)
+        self.page_frame_lst[max_opt_id] = new_exp
 
-        return max_opt_id, new_opt
+        return max_opt_id, new_exp
 
+
+class LruPageReplacement(PageReplacement):
+    """
+    LRU页面置换算法
+    """
+
+    def cal_func(self, step):
+        def get_lru(step):
+            for i in range(step, -1, -1):
+                if self.page_lst[step] == self.page_lst[i]:
+                    return i
+            return 0
+
+        if len(self.page_frame_lst) < self.page_frame_num:
+            self.page_frame_lst.append(get_lru(step))
+            return step, get_lru(step)
+        else:
+            for j in range(3):
+                if self.page_lst[step] == self.page_lst[self.page_frame_lst[j]]:
+                    self.page_frame_lst[j] = get_lru(step)
+                    return j, get_lru(step)
+
+        min_opt_id = self.page_frame_lst.index(min(self.page_frame_lst))
+        new_exp = get_lru(step)
+        self.page_frame_lst[min_opt_id] = new_exp
+
+        return min_opt_id, new_exp
