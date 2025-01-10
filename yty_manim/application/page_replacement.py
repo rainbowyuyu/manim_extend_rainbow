@@ -274,4 +274,4 @@ class FifoPageReplacement(PageReplacement):
                     return j, step
 
         self.loss_page += 1
-        return step % 3, step
+        return self.loss_page % 3, step
