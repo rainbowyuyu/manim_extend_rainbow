@@ -151,7 +151,7 @@ class PageReplacement(Page):
         并且做出相应的缺页数改变，
         详细看经典算法的示例。
         :param step: 当前步骤
-        :returns: 选择的页框，选择的页面
+        :returns: 需要替换的页框，标注指向的页面
         """
         pass
 
@@ -274,4 +274,4 @@ class FifoPageReplacement(PageReplacement):
                     return j, step
 
         self.loss_page += 1
-        return self.loss_page % 3, step
+        return self.loss_page % self.page_frame_num, step
