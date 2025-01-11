@@ -134,8 +134,16 @@ class PageReplacement(Page):
     ):
         super().__init__(page_lst, **kwargs)
         self.page_frame_lst = []
+        self.stack = []
         self.frame_expect = 0
         self.page_expect = 0
+
+    def cal_stack(self, step):
+        """
+        维护栈接口
+        :return:
+        """
+        pass
 
     def cal_func(self, step):
         """
@@ -270,8 +278,8 @@ class FifoPageReplacement(PageReplacement):
         else:
             for j in range(self.page_frame_num):
                 if self.page_lst[step] == self.page_lst[self.page_frame_lst[j]]:
-                    self.page_frame_lst[j] = step
                     return j, step
 
+        self.page_frame_lst[self.loss_page % self.page_frame_num] = step
         self.loss_page += 1
-        return self.loss_page % self.page_frame_num, step
+        return (self.loss_page - 1) % self.page_frame_num, step
