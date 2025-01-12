@@ -1,9 +1,9 @@
 # rainbow_yu manim_extend.basic_unit.squ_tex 🐋✨
 # 数据块等动画基本的类
-
+import numpy as np
 from manim import *
 
-__version__ = "0.2.4"
+__version__ = "0.2.5"
 
 __all__ = (
     "typedict",
@@ -91,6 +91,9 @@ class SquTex(VGroup):
 
     def _construct(self):
         self.arrange(buff=self.buff, direction=self.arrange_direction)
+        self.update_distance()
+
+    def update_distance(self):
         if len(self) > 1:
             self.distance = np.array((
                 self[1].get_center()[0] - self[0].get_center()[0],
@@ -236,6 +239,49 @@ class SquTexSlide(SquTex):
             **kwargs,
     ):
         super().__init__(tex)
+
+    def pop(
+            self,
+            index,
+    ):
+        """
+        弹出动画
+        :param index: 位置
+        :return: all_the_animate
+        """
+        all_the_animate = []
+        cp = self.copy()
+        popped = self[index]
+        self.remove(popped)
+        all_the_animate.append(
+            FadeOut(popped, shift=np.array((self.distance[1], -self.distance[0], 0))),
+        )
+        for i in range(index, len(self)):
+            all_the_animate.append(self[i].animate.move_to(cp[i]))
+        return all_the_animate
+
+    def push(
+            self,
+            index,
+            squ_tex: SquTex
+    ):
+        """
+        推入动画
+        :param index: 位置
+        :param squ_tex: 加入的数据块
+        :return: all_the_animate
+        """
+        cp = self.copy()
+        squ_tex.move_to(cp[index])
+        self.update_distance()
+        all_the_animate = []
+        self.insert(index, squ_tex)
+        for i in range(index, len(self)):
+            all_the_animate.append(self[i].animate.shift(self.distance))
+        all_the_animate.append(
+            FadeIn(squ_tex, shift=np.array((self.distance[1], -self.distance[0], 0))),
+        )
+        return all_the_animate
 
     def _slide_order(
             self,

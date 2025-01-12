@@ -135,6 +135,7 @@ class PageReplacement(Page):
         super().__init__(page_lst, **kwargs)
         self.page_frame_lst = []
         self.stack = []
+        self.is_stack = False
         self.frame_expect = 0
         self.page_expect = 0
 
