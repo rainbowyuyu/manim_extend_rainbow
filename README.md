@@ -37,7 +37,7 @@ manim_extend_rainbow
 ## squ_tex.py
 包含两个类 `SquTex` 和 `SquTexSlide`
 
-![squ_tex](media/images/manim_extend_rainbow/SquTexIndex_ManimCE_v0.18.0.png)
+![squ_tex](yty_manim/examples/squ_tex.png)
 
 ---
 
@@ -135,7 +135,7 @@ print(test_bin.ex_two())
 ## matrix_yty.py
 包含基类 `MatrixCal` 和 实际计算 `MatrixDet` 和 `MatrixMath`
 
-![matrix_example](media/images/manim_extend_rainbow/MatrixExample_ManimCE_v0.18.0.png)
+![matrix_example](yty_manim/examples/matrix_example.png)
 
 ---
 ### MatrixCal
