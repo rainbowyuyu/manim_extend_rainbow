@@ -14,7 +14,7 @@ pip install -r requirements.txt
 ---
 
 文件结构：  
-manim_extend_rainbow  
+yty_manim  
 ├──[examples.ipynb](examples.ipynb)   
 ├──[disposition](yty_manim%2Fdisposition)  
 │ ├── [speed_rate_fuc.py](yty_manim%2Fdisposition%2Fspeed_rate_fuc.py)  
