@@ -48,6 +48,9 @@ class ScreenCycle(VGroup):
         :return: self
         """
         self.now_screen += 1
+        if self.now_screen == self.total_steps:
+            self._init()
+            return self
         self.shift(-self[self.now_screen].get_center())
         if self.now_screen == 0:
             self.set_color(GRAY_B)
@@ -61,12 +64,7 @@ class ScreenCycle(VGroup):
         向后轮播
         :return: self
         """
-        self.now_screen -= 1
-        if self.now_screen == -1:
-            self._init()
-        else:
-            self.shift(-self[self.now_screen].get_center())
-        return self
+        pass
 
     def set_to_edge(
         self, edge: Vector3 = LEFT, buff: float = DEFAULT_MOBJECT_TO_EDGE_BUFFER
@@ -80,7 +78,6 @@ class ScreenCycle(VGroup):
         self[self.now_screen].to_edge(edge, buff=buff)
         for item in self:
             if item != self[self.now_screen]:
-                item.to_edge(edge, buff=buff)
                 item.set_opacity(0)
         return self
 
