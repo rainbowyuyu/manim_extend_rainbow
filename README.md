@@ -15,16 +15,18 @@ pip install -r requirements.txt
 
 文件结构：  
 manim_extend_rainbow  
-├──examples.ipynb   
-├──disposition  
-│ └── fonts_and_colors.py  
-├──basic_unit  
-│ ├── squ_tex.py  
-│ ├── dec_bin.py  
-│ └── threed_vgp.py  
-└── application  
-  ├── matrix_yty.py  
-  └── page_replacement.py
+├──[examples.ipynb](examples.ipynb)   
+├──[disposition](yty_manim%2Fdisposition)  
+│ ├── [speed_rate_fuc.py](yty_manim%2Fdisposition%2Fspeed_rate_fuc.py)  
+│ └── [fonts_and_colors.py](yty_manim%2Fdisposition%2Ffonts_and_colors.py)  
+├──[basic_unit](yty_manim%2Fbasic_unit)   
+│ ├── [squ_tex.py](yty_manim%2Fbasic_unit%2Fsqu_tex.py)  
+│ ├── [dec_bin.py](yty_manim%2Fbasic_unit%2Fdec_bin.py)  
+│ ├── [screen_cycle.py](yty_manim%2Fbasic_unit%2Fscreen_cycle.py)  
+│ └── [threed_vgp.py](yty_manim%2Fbasic_unit%2Fthreed_vgp.py)  
+└── [disposition](yty_manim%2Fdisposition)  
+  ├── [matrix_yty.py](yty_manim%2Fapplication%2Fmatrix_yty.py)  
+  └── [page_replacement.py](yty_manim%2Fapplication%2Fpage_replacement.py)
 
 ---
 
