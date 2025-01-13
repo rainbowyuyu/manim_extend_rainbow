@@ -139,13 +139,6 @@ class PageReplacement(Page):
         self.frame_expect = 0
         self.page_expect = 0
 
-    def cal_stack(self, step):
-        """
-        维护栈接口
-        :return:
-        """
-        pass
-
     def cal_func(self, step):
         """
         页面置换算法接口，继承后重写课改变页面置换搜索逻辑，
@@ -161,6 +154,20 @@ class PageReplacement(Page):
         详细看经典算法的示例。
         :param step: 当前步骤
         :returns: 需要替换的页框，标注指向的页面
+        """
+        pass
+
+    def init_stack(self):
+        """
+        创建栈接口
+        :return:
+        """
+        pass
+
+    def cal_stack(self, step):
+        """
+        维护栈接口
+        :return:
         """
         pass
 
