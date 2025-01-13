@@ -160,14 +160,15 @@ class PageReplacement(Page):
     def init_stack(self):
         """
         创建栈接口
-        :return:
+        :return: 如果有栈结构返回栈的SquTex，没有则返回None
         """
         pass
 
     def cal_stack(self, step):
         """
         维护栈接口
-        :return:
+        :param step: 当前步骤
+        :return: 弹出的值，压入的值
         """
         pass
 
@@ -243,6 +244,9 @@ class OptPageReplacement(PageReplacement):
         self.page_frame_lst[max_opt_id] = new_exp
         self.loss_page += 1
         return max_opt_id, new_exp
+
+    def init_stack(self):
+        return None
 
 
 class LruPageReplacement(PageReplacement):
