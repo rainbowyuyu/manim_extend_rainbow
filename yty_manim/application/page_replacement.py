@@ -134,8 +134,7 @@ class PageReplacement(Page):
     ):
         super().__init__(page_lst, **kwargs)
         self.page_frame_lst = []
-        self.stack = []
-        self.is_stack = False
+        self.stack = None
         self.frame_expect = 0
         self.page_expect = 0
 
@@ -160,7 +159,7 @@ class PageReplacement(Page):
     def init_stack(self):
         """
         创建栈接口
-        :return: 如果有栈结构返回栈的SquTex，没有则返回None
+        :return: 如果有栈结构构造栈的SquTex，没有则保持None，返回self
         """
         pass
 
@@ -246,7 +245,8 @@ class OptPageReplacement(PageReplacement):
         return max_opt_id, new_exp
 
     def init_stack(self):
-        return None
+        self.stack = None
+        return self
 
 
 class LruPageReplacement(PageReplacement):

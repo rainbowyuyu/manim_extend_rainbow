@@ -1,9 +1,7 @@
 # rainbow_yu manim_extend.basic_unit.squ_tex 🐋✨
 # 数据块等动画基本的类
-import numpy as np
-from manim import *
 
-__version__ = "0.2.5"
+from ..disposition.fonts_and_colors import *
 
 __all__ = (
     "typedict",
@@ -11,18 +9,6 @@ __all__ = (
     "SquTexSlide",
     "SquTexAddition",
 )
-
-
-# 默认数据块样式
-typedict = {
-    "default_type": {
-        "side_length": 0.5,
-        "fill_color": BLUE,
-        "fill_opacity": 0.5,
-        "stroke_opacity": 0.8,
-        "color": BLUE
-    }
-}
 
 
 class SquTex(VGroup):
@@ -69,7 +55,7 @@ class SquTex(VGroup):
 
     def __init__(
             self,
-            tex: str | list,
+            tex: str | list = None,
             font="",
             buff=0,
             arrange_direction=RIGHT,
@@ -81,12 +67,16 @@ class SquTex(VGroup):
         self.distance = np.array((0.0, 0.0, 0.0))
 
         super().__init__()
-        for i in range(len(tex)):
-            v = VGroup(
-                Square(**kwargs),
-                Text(f"{tex[i]}", font=font),
-            )
+        if tex is None:
+            v = VGroup()
             self.add(v)
+        else:
+            for i in range(len(tex)):
+                v = VGroup(
+                    Square(**kwargs),
+                    Text(f"{tex[i]}", font=font),
+                )
+                self.add(v)
         self._construct()
 
     def _construct(self):
@@ -235,14 +225,14 @@ class SquTexSlide(SquTex):
 
     def __init__(
             self,
-            tex: str | list,
+            tex,
             **kwargs,
     ):
-        super().__init__(tex)
+        super().__init__(tex, **kwargs)
 
     def pop(
             self,
-            index,
+            index=-1,
     ):
         """
         弹出动画
@@ -262,8 +252,8 @@ class SquTexSlide(SquTex):
 
     def push(
             self,
-            index,
-            squ_tex: SquTex
+            squ_tex: SquTex,
+            index=-1
     ):
         """
         推入动画

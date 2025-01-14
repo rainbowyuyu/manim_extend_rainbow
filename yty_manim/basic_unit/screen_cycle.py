@@ -1,5 +1,5 @@
 # rainbow_yu manim_extend.basic_unit.screen_cycle 🐋✨
-# 画面屏幕轮播
+# 标题画面屏幕轮播
 
 from typing_extensions import Self
 from manim.typing import Vector3
@@ -8,7 +8,37 @@ from yty_manim.disposition.fonts_and_colors import *
 
 class ScreenCycle(VGroup):
     """
-    画面屏幕轮播
+    画面屏幕轮播，
+    继承于 :class:`~.VGroup` ，
+
+    Notes
+    -----
+
+    - 常用于开始介绍界面的标题画面轮播和标题置于边角
+
+    Examples
+    --------
+
+    标题轮播:
+
+    >>> class ScreenTest(Scene):
+    >>>     def construct(self):
+    >>>         text_list = [
+    >>>             "Hello World",
+    >>>             "Hell Worl",
+    >>>             "Hel Wor",
+    >>>             "HE Wo",
+    >>>         ]
+    >>>         s = ScreenCycle(text_list)
+    >>>         self.add(s)
+    >>>         self.play(s.animate.step_forward())
+    >>>         self.play(s.animate.step_forward())
+    >>>         self.play(s.animate.set_to_edge(UL))
+    >>>         self.play(s.animate.set_back())
+    >>>         self.play(s.animate.step_forward())
+    >>>         self.play(s.animate.step_forward())
+    >>>         self.play(s.animate.step_forward())
+
     """
     def __init__(
             self,
@@ -33,7 +63,7 @@ class ScreenCycle(VGroup):
         self.set_color_by_gradient(gradient_color)
         self.arrange(DOWN, buff=buff_distance)
 
-    def _init(self):
+    def _init_screen(self):
         """
         位置和颜色初始化
         :return: self
@@ -49,7 +79,7 @@ class ScreenCycle(VGroup):
         """
         self.now_screen += 1
         if self.now_screen == self.total_steps:
-            self._init()
+            self._init_screen()
             return self
         self.shift(-self[self.now_screen].get_center())
         if self.now_screen == 0:
