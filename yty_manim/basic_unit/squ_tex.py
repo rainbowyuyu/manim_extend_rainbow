@@ -253,7 +253,7 @@ class SquTexSlide(SquTex):
         all_the_animate.append(
             FadeOut(popped, shift=np.array((self.distance[1], -self.distance[0], 0))),
         )
-        for i in range((len(self)+index) % len(self), len(self)):
+        for i in range(index, len(self)):
             all_the_animate.append(self[i].animate.move_to(cp[i]))
         if force_center:
             all_the_animate.append(self.animate.move_to(center))
@@ -274,7 +274,7 @@ class SquTexSlide(SquTex):
         """
         cp = self.copy()
         all_the_animate = []
-        center = self.get_center()
+        # center = self.get_center()
 
         if index is None or index == len(self):
             squ_tex.next_to(self, direction=self.arrange_direction,buff=self.buff)
@@ -294,6 +294,7 @@ class SquTexSlide(SquTex):
         if force_center:
             all_the_animate.append(self.animate.arrange(direction=self.arrange_direction, buff=self.buff))
             # all_the_animate.append(self.animate.move_to(center))
+
         return all_the_animate
 
     def _slide_order(
