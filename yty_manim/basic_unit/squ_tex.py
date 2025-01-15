@@ -1,5 +1,6 @@
 # rainbow_yu manim_extend.basic_unit.squ_tex 🐋✨
 # 数据块等动画基本的类
+from typing_extensions import Self
 
 from ..disposition.fonts_and_colors import *
 
@@ -7,7 +8,6 @@ __all__ = (
     "typedict",
     "SquTex",
     "SquTexSlide",
-    "SquTexAddition",
 )
 
 
@@ -55,7 +55,7 @@ class SquTex(VGroup):
 
     def __init__(
             self,
-            tex: str | list = None,
+            tex: str | list,
             font="",
             buff=0,
             arrange_direction=RIGHT,
@@ -84,12 +84,8 @@ class SquTex(VGroup):
         self.update_distance()
 
     def update_distance(self):
-        if len(self) > 1:
-            self.distance = np.array((
-                self[1].get_center()[0] - self[0].get_center()[0],
-                self[1].get_center()[1] - self[0].get_center()[1],
-                self[1].get_center()[2] - self[0].get_center()[2],
-            ))
+        self.distance = self[0].width + self.buff
+        return self
 
     def add_bracket(
             self,
@@ -233,14 +229,18 @@ class SquTexSlide(SquTex):
     def pop(
             self,
             index=-1,
+            force_center=False
     ):
         """
         弹出动画
         :param index: 位置
+        :param force_center: 强制居中
         :return: all_the_animate
         """
         all_the_animate = []
+        center = self.get_center()
         cp = self.copy()
+
         popped = self[index]
         self.remove(popped)
         all_the_animate.append(
@@ -248,29 +248,37 @@ class SquTexSlide(SquTex):
         )
         for i in range(index, len(self)):
             all_the_animate.append(self[i].animate.move_to(cp[i]))
+        if force_center:
+            self.move_to(center)
         return all_the_animate
 
     def push(
             self,
             squ_tex: SquTex,
-            index=-1
+            index=-1,
+            force_center=False,
     ):
         """
         推入动画
         :param index: 位置
         :param squ_tex: 加入的数据块
+        :param force_center: 强制居中
         :return: all_the_animate
         """
         cp = self.copy()
         squ_tex.move_to(cp[index])
         self.update_distance()
         all_the_animate = []
+        center = self.get_center()
+
         self.insert(index, squ_tex)
         for i in range(index, len(self)):
             all_the_animate.append(self[i].animate.shift(self.distance))
         all_the_animate.append(
             FadeIn(squ_tex, shift=np.array((self.distance[1], -self.distance[0], 0))),
         )
+        if force_center:
+            self.move_to(center)
         return all_the_animate
 
     def _slide_order(
@@ -385,5 +393,3 @@ class SquTexSlide(SquTex):
         return all_the_animate
 
 
-class SquTexAddition(SquTex):
-    pass
