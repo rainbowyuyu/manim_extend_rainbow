@@ -1,6 +1,5 @@
 # rainbow_yu manim_extend.basic_unit.squ_tex 🐋✨
 # 数据块等动画基本的类
-from typing_extensions import Self
 
 from ..disposition.fonts_and_colors import *
 
@@ -189,11 +188,26 @@ class SquTexSlide(SquTex):
     -----
 
     - 在数据块的基础上添加滑动的动画，
+    - 使用 :method:`pop` 和 :method:`push` 完成基本栈和队列的压入和弹出
     - 使用 :method:`slide` 做基本的位置变化滑动
     - 使用 :method:`slide_fade` 做数据块内部或外部添加的循环滑动，并且头尾缓入缓出
 
     Examples
     --------
+
+    栈和队列的压入弹出 :method:`pop` 和 :method:`push`:
+
+    >>> class StackTest(Scene):
+    >>>     def construct(self):
+    >>>         s = SquTexSlide("ra")
+    >>>         p1 = SquTexSlide("i")
+    >>>         p2 = SquTexSlide("n")
+    >>>         self.add(s)
+    >>>         self.play(*s.push(p1,2,force_center=True))
+    >>>         self.play(*s.push(p2,3,force_center=True))
+    >>>         for i in range(3):
+    >>>             self.play(*s.pop(0,force_center=True))
+    >>>         self.wait()
 
     基础滑动 :method:`slide`:
 
