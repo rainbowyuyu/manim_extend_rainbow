@@ -236,7 +236,7 @@ class SquTexSlide(SquTex):
 
     def __init__(
             self,
-            tex,
+            tex: str | list,
             **kwargs,
     ):
         super().__init__(tex, **kwargs)

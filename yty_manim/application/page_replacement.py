@@ -64,7 +64,7 @@ class Page(VGroup):
         self._add_to_page()
 
     def _construct(self):
-        self.pages = SquTex(self.page_lst, stroke_opacity=0, side_length=self.one_step[0]).scale(self.one_step[1])
+        self.pages = SquTex(self.page_lst,font=text_font[0], stroke_opacity=0, side_length=self.one_step[0]).scale(self.one_step[1])
         self.page_frame = SquTex(
             [" " for i in range(self.page_frame_num)],
             arrange_direction=DOWN,
