@@ -258,6 +258,9 @@ class SquTexSlide(SquTex):
         :param force_center: 强制居中
         :return: all_the_animate
         """
+        if index is None:
+            return
+
         all_the_animate = []
         center = self.get_center()
         cp = self.copy()
@@ -275,14 +278,14 @@ class SquTexSlide(SquTex):
 
     def push(
             self,
-            squ_tex: SquTex,
+            st_input: SquTex,
             index=None,
             force_center=False,
     ):
         """
         推入动画
         :param index: 位置
-        :param squ_tex: 加入的数据块
+        :param st_input: 加入的数据块
         :param force_center: 强制居中
         :return: all_the_animate
         """
@@ -291,19 +294,19 @@ class SquTexSlide(SquTex):
         # center = self.get_center()
 
         if index is None or index == len(self):
-            squ_tex.next_to(self, direction=self.arrange_direction,buff=self.buff)
-            self.add(squ_tex)
+            st_input.next_to(self, direction=self.arrange_direction, buff=self.buff)
+            self.add(st_input)
             all_the_animate.append(
-                FadeIn(squ_tex, shift=np.array((self.distance[1], -self.distance[0], 0))),
+                FadeIn(st_input, shift=np.array((self.distance[1], -self.distance[0], 0))),
             )
         else:
-            squ_tex.move_to(cp[index])
+            st_input.move_to(cp[index])
             for i in range(index, len(self)):
                 all_the_animate.append(self[i].animate.shift(self.distance))
             all_the_animate.append(
-                FadeIn(squ_tex, shift=np.array((self.distance[1], -self.distance[0], 0))),
+                FadeIn(st_input, shift=np.array((self.distance[1], -self.distance[0], 0))),
             )
-            self.insert(index, squ_tex)
+            self.insert(index, st_input)
 
         if force_center:
             all_the_animate.append(self.animate.arrange(direction=self.arrange_direction, buff=self.buff))
@@ -421,5 +424,3 @@ class SquTexSlide(SquTex):
 
         self._slide_order(direction, st_input)
         return all_the_animate
-
-

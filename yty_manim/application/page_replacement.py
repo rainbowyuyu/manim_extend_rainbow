@@ -137,6 +137,8 @@ class PageReplacement(Page):
         self.stack = None
         self.frame_expect = 0
         self.page_expect = 0
+        self.pop = None
+        self.push = None
 
     def cal_func(self, step):
         """
@@ -161,13 +163,14 @@ class PageReplacement(Page):
         创建栈接口
         :return: 如果有栈结构构造栈的SquTex，没有则保持None，返回self
         """
-        pass
+        self.stack = SquTexSlide(" ")
+        return self
 
     def cal_stack(self, step):
         """
         维护栈接口
         :param step: 当前步骤
-        :return: 弹出的值，压入的值
+        :return: 弹出的index，压入的数据块
         """
         pass
 
@@ -178,6 +181,8 @@ class PageReplacement(Page):
         :return: None
         """
         self.frame_expect, self.page_expect = self.cal_func(step)
+        if self.stack is not None:
+            self.pop, self.push = self.cal_stack(step)
 
 
 def step_on(
@@ -225,24 +230,25 @@ class OptPageReplacement(PageReplacement):
                     return i
             return len(self.page_lst) - 1
 
+        # 已有页面
+        for j in range(self.page_frame_num):
+            if self.page_lst[step] == self.page_lst[self.page_frame_lst[j]]:
+                self.page_frame_lst[j] = get_opt(step)
+                return j, get_opt(step)
+
         # 页面未填满
         if len(self.page_frame_lst) < self.page_frame_num:
             self.page_frame_lst.append(get_opt(step))
             self.loss_page += 1
             return step, get_opt(step)
-        # 已有页面
-        else:
-            for j in range(self.page_frame_num):
-                if self.page_lst[step] == self.page_lst[self.page_frame_lst[j]]:
-                    self.page_frame_lst[j] = get_opt(step)
-                    return j, get_opt(step)
 
         # 缺页中断
-        max_opt_id = self.page_frame_lst.index(max(self.page_frame_lst))
-        new_exp = get_opt(step)
-        self.page_frame_lst[max_opt_id] = new_exp
-        self.loss_page += 1
-        return max_opt_id, new_exp
+        else:
+            max_opt_id = self.page_frame_lst.index(max(self.page_frame_lst))
+            new_exp = get_opt(step)
+            self.page_frame_lst[max_opt_id] = new_exp
+            self.loss_page += 1
+            return max_opt_id, new_exp
 
     def init_stack(self):
         self.stack = None
@@ -276,6 +282,9 @@ class LruPageReplacement(PageReplacement):
         self.page_frame_lst[min_opt_id] = new_exp
         self.loss_page += 1
         return min_opt_id, new_exp
+
+    def cal_stack(self, step):
+       pass
 
 
 class FifoPageReplacement(PageReplacement):
