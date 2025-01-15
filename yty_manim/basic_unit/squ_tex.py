@@ -84,7 +84,14 @@ class SquTex(VGroup):
         self.update_distance()
 
     def update_distance(self):
-        self.distance = self[0].width + self.buff
+        cp = self[0].copy()
+        cp.next_to(self[0], self.arrange_direction, buff=self.buff)
+        self.distance = np.array((
+            cp.get_center()[0] - self[0].get_center()[0],
+            cp.get_center()[1] - self[0].get_center()[1],
+            cp.get_center()[2] - self[0].get_center()[2],
+        ))
+        del cp
         return self
 
     def add_bracket(
@@ -246,16 +253,16 @@ class SquTexSlide(SquTex):
         all_the_animate.append(
             FadeOut(popped, shift=np.array((self.distance[1], -self.distance[0], 0))),
         )
-        for i in range(index, len(self)):
+        for i in range((len(self)+index) % len(self), len(self)):
             all_the_animate.append(self[i].animate.move_to(cp[i]))
         if force_center:
-            self.move_to(center)
+            all_the_animate.append(self.animate.move_to(center))
         return all_the_animate
 
     def push(
             self,
             squ_tex: SquTex,
-            index=-1,
+            index=None,
             force_center=False,
     ):
         """
@@ -266,19 +273,27 @@ class SquTexSlide(SquTex):
         :return: all_the_animate
         """
         cp = self.copy()
-        squ_tex.move_to(cp[index])
-        self.update_distance()
         all_the_animate = []
         center = self.get_center()
 
-        self.insert(index, squ_tex)
-        for i in range(index, len(self)):
-            all_the_animate.append(self[i].animate.shift(self.distance))
-        all_the_animate.append(
-            FadeIn(squ_tex, shift=np.array((self.distance[1], -self.distance[0], 0))),
-        )
+        if index is None or index == len(self):
+            squ_tex.next_to(self, direction=self.arrange_direction,buff=self.buff)
+            self.add(squ_tex)
+            all_the_animate.append(
+                FadeIn(squ_tex, shift=np.array((self.distance[1], -self.distance[0], 0))),
+            )
+        else:
+            squ_tex.move_to(cp[index])
+            for i in range(index, len(self)):
+                all_the_animate.append(self[i].animate.shift(self.distance))
+            all_the_animate.append(
+                FadeIn(squ_tex, shift=np.array((self.distance[1], -self.distance[0], 0))),
+            )
+            self.insert(index, squ_tex)
+
         if force_center:
-            self.move_to(center)
+            all_the_animate.append(self.animate.arrange(direction=self.arrange_direction, buff=self.buff))
+            # all_the_animate.append(self.animate.move_to(center))
         return all_the_animate
 
     def _slide_order(
@@ -385,7 +400,7 @@ class SquTexSlide(SquTex):
             if direction > 0 else
             cp[(len(self) - 1 + direction) % len(self)],
             direction=(-direction) * self.distance,
-            buff=0,
+            buff=self.buff,
         )
         all_the_animate.append(FadeIn(out_vgp, shift=direction * self.distance))
 
