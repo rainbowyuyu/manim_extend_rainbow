@@ -86,7 +86,6 @@ class SquTex(VGroup):
             cp.get_center()[1] - self[0].get_center()[1],
             cp.get_center()[2] - self[0].get_center()[2],
         ))
-        return self
 
     def add_bracket(
             self,

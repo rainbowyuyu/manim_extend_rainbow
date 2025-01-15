@@ -66,7 +66,7 @@ class Page(VGroup):
     def _construct(self):
         self.pages = SquTex(self.page_lst, stroke_opacity=0, side_length=self.one_step[0]).scale(self.one_step[1])
         self.page_frame = SquTex(
-            ["" for i in range(self.page_frame_num)],
+            [" " for i in range(self.page_frame_num)],
             arrange_direction=DOWN,
             side_length=1,
             fill_color=BLUE,
@@ -136,7 +136,6 @@ class PageReplacement(Page):
         self.page_frame_lst = []
         self.frame_expect = 0
         self.page_expect = 0
-
 
     def cal_func(self, step):
         """
