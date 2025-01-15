@@ -66,16 +66,12 @@ class SquTex(VGroup):
         self.distance = np.array((0.0, 0.0, 0.0))
 
         super().__init__()
-        if tex is None:
-            v = VGroup()
+        for i in range(len(self.tex)):
+            v = VGroup(
+                Square(**kwargs),
+                Text(f"{self.tex[i]}", font=font),
+            )
             self.add(v)
-        else:
-            for i in range(len(tex)):
-                v = VGroup(
-                    Square(**kwargs),
-                    Text(f"{tex[i]}", font=font),
-                )
-                self.add(v)
         self._construct()
 
     def _construct(self):
@@ -90,7 +86,6 @@ class SquTex(VGroup):
             cp.get_center()[1] - self[0].get_center()[1],
             cp.get_center()[2] - self[0].get_center()[2],
         ))
-        del cp
         return self
 
     def add_bracket(

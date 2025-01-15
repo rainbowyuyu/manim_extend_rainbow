@@ -134,11 +134,9 @@ class PageReplacement(Page):
     ):
         super().__init__(page_lst, **kwargs)
         self.page_frame_lst = []
-        self.stack = None
         self.frame_expect = 0
         self.page_expect = 0
-        self.pop = None
-        self.push = None
+
 
     def cal_func(self, step):
         """
@@ -163,8 +161,7 @@ class PageReplacement(Page):
         创建栈接口
         :return: 如果有栈结构构造栈的SquTex，没有则保持None，返回self
         """
-        self.stack = SquTexSlide(" ")
-        return self
+        pass
 
     def cal_stack(self, step):
         """
@@ -181,8 +178,6 @@ class PageReplacement(Page):
         :return: None
         """
         self.frame_expect, self.page_expect = self.cal_func(step)
-        if self.stack is not None:
-            self.pop, self.push = self.cal_stack(step)
 
 
 def step_on(
@@ -250,10 +245,6 @@ class OptPageReplacement(PageReplacement):
             self.loss_page += 1
             return max_opt_id, new_exp
 
-    def init_stack(self):
-        self.stack = None
-        return self
-
 
 class LruPageReplacement(PageReplacement):
     """
@@ -282,9 +273,6 @@ class LruPageReplacement(PageReplacement):
         self.page_frame_lst[min_opt_id] = new_exp
         self.loss_page += 1
         return min_opt_id, new_exp
-
-    def cal_stack(self, step):
-       pass
 
 
 class FifoPageReplacement(PageReplacement):

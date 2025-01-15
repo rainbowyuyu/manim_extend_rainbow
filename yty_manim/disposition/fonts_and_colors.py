@@ -32,7 +32,7 @@ gradient_dict = dict(
 
 # 形状字典
 typedict = {
-    "blue_type": {
+    "default_type": {
         "side_length": 1,
         "fill_color": BLUE,
         "fill_opacity": 0.5,
