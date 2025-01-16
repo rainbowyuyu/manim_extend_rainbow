@@ -60,6 +60,8 @@ class Page(VGroup):
         else:
             raise ValueError("页框数必须小于颜色数")
 
+        self.DEFAULT_STACK_SHIFT = UP * 2 + self.page_frame_num / 2 * LEFT
+
         self._construct()
         self._add_to_page()
 
@@ -90,6 +92,17 @@ class Page(VGroup):
         self.missing_rate.scale(0.75).to_edge(RIGHT, buff=1).shift(UP*0.5)
         self.missing_tracker = self.missing_rate.tracker
 
+        self.stack = SquTexSlide(
+            " ",
+            font=text_font[0],
+            arrange_direction=RIGHT,
+            side_length=1,
+            fill_color=BLUE,
+            fill_opacity=0.5,
+            stroke_opacity=0.8,
+            color=BLUE
+        ).shift(self.DEFAULT_STACK_SHIFT)
+
     def _add_to_page(self):
         self.add(
             self.pages,
@@ -97,6 +110,7 @@ class Page(VGroup):
             # self.opt_frame,
             self.page_highlight,
             self.missing_rate,
+            self.stack
         )
         # 至于顶层
         self.page_highlight.z_index = 5
@@ -137,6 +151,9 @@ class PageReplacement(Page):
         self.page_frame_lst = []
         self.frame_expect = 0
         self.page_expect = 0
+        self.stack_lst = []
+        self.pop_index = None
+        self.push_val = 0
 
     def cal_func(self, step):
         """
@@ -161,13 +178,14 @@ class PageReplacement(Page):
         创建栈接口
         :return: 如果有栈结构构造栈的SquTex，没有则保持None，返回self
         """
-        pass
+        self.stack = None
+        return self
 
     def cal_stack(self, step):
         """
         维护栈接口
         :param step: 当前步骤
-        :return: 弹出的index，压入的数据块
+        :return: 弹出的index，压入的值
         """
         pass
 
@@ -178,6 +196,8 @@ class PageReplacement(Page):
         :return: None
         """
         self.frame_expect, self.page_expect = self.cal_func(step)
+        if self.stack:
+            self.pop_index, self.push_val = self.cal_stack(step)
 
 
 def step_on(
@@ -203,10 +223,16 @@ def step_on(
     scene.wait(run_time)
     scene.play(page.page_highlight.animate.move_to(page.page_frame[page.frame_expect]), run_time=run_time)
     scene.play(Indicate(page.opt_frame[page.frame_expect]), run_time=run_time)
-    scene.play(page.page_frame.animate.change_word_in_text(page.frame_expect, page.page_lst[step], 0.5), run_time=run_time)
+    scene.play(
+        page.page_frame.animate.change_word_in_text(page.frame_expect, page.page_lst[step], 0.5),
+        *page.stack.pop(page.pop_index) if page.stack is not None else [],
+        run_time=run_time,
+    )
     scene.play(
         page.opt_frame[page.frame_expect].animate.move_to(page.pages[page.page_expect]),
         page.missing_tracker.animate.set_value(page.loss_page/(step+1)),
+        page.stack.animate.change_word_in_text(0, page.push_val) if page.stack is not None and len(page.stack_lst) == 0 else page.animate,
+        *page.stack.push(page.push_val) if page.stack is not None and len(page.stack_lst) > 0 else [],
         run_time=run_time,
     )
     scene.wait(run_time)
@@ -273,6 +299,24 @@ class LruPageReplacement(PageReplacement):
         self.page_frame_lst[min_opt_id] = new_exp
         self.loss_page += 1
         return min_opt_id, new_exp
+
+    def cal_stack(self, step):
+        # 不缺页
+        for j in range(len(self.stack_lst)):
+            if self.stack_lst[j] == self.page_lst[step]:
+                popped = self.stack_lst.pop(j)
+                self.stack_lst.append(popped)
+                return j, self.stack_lst[-1]
+
+        # 新增页面
+        if len(self.stack_lst) < self.page_frame_num:
+            self.stack_lst.append(self.page_lst[step])
+            return None, self.page_lst[step]
+        # 缺页
+        else:
+            self.stack_lst.pop(0)
+            self.stack_lst.append(self.page_lst[step])
+            return 0, self.page_lst[step]
 
 
 class FifoPageReplacement(PageReplacement):

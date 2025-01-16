@@ -64,12 +64,14 @@ class SquTex(VGroup):
         self.buff = buff
         self.arrange_direction = arrange_direction
         self.distance = np.array((0.0, 0.0, 0.0))
+        self.font = font
+        self.settings = kwargs
 
         super().__init__()
         for i in range(len(self.tex)):
             v = VGroup(
                 Square(**kwargs),
-                Text(f"{self.tex[i]}", font=font),
+                Text(f"{self.tex[i]}", font=self.font),
             )
             self.add(v)
         self._construct()
@@ -168,7 +170,7 @@ class SquTex(VGroup):
         """
         if text is None:
             text = self.tex[index]
-        self[index][1] = Text(f"{text}", **kwargs).scale(scale_factor)
+        self[index][1] = Text(f"{text}", font=self.font, **kwargs).scale(scale_factor)
         self[index][1].move_to(self[index][0])
         return self
 
@@ -253,7 +255,7 @@ class SquTexSlide(SquTex):
         :return: all_the_animate
         """
         if index is None:
-            return
+            return []
 
         all_the_animate = []
         center = self.get_center()
@@ -272,7 +274,7 @@ class SquTexSlide(SquTex):
 
     def push(
             self,
-            st_input: SquTex,
+            st_input: SquTex | str | int,
             index=None,
             force_center=False,
     ):
@@ -285,7 +287,11 @@ class SquTexSlide(SquTex):
         """
         cp = self.copy()
         all_the_animate = []
-        # center = self.get_center()
+
+        if isinstance(st_input, SquTex):
+            st_input = st_input.tex
+
+        st_input = SquTexSlide(f"{st_input}", font=self.font, **self.settings)
 
         if index is None or index == len(self):
             st_input.next_to(self, direction=self.arrange_direction, buff=self.buff)
@@ -304,7 +310,6 @@ class SquTexSlide(SquTex):
 
         if force_center:
             all_the_animate.append(self.animate.arrange(direction=self.arrange_direction, buff=self.buff))
-            # all_the_animate.append(self.animate.move_to(center))
 
         return all_the_animate
 
