@@ -154,6 +154,7 @@ class PageReplacement(Page):
         self.stack_lst = []
         self.pop_index = None
         self.push_val = 0
+        self.stepped = False
 
     def cal_func(self, step):
         """
@@ -225,14 +226,14 @@ def step_on(
     scene.play(Indicate(page.opt_frame[page.frame_expect]), run_time=run_time)
     scene.play(
         page.page_frame.animate.change_word_in_text(page.frame_expect, page.page_lst[step], 0.5),
-        *page.stack.pop(page.pop_index) if page.stack is not None else [],
+        *page.stack.pop(page.pop_index) if page.stack is not None and page.pop_index != "pass" else [],
         run_time=run_time,
     )
     scene.play(
         page.opt_frame[page.frame_expect].animate.move_to(page.pages[page.page_expect]),
         page.missing_tracker.animate.set_value(page.loss_page/(step+1)),
-        page.stack.animate.change_word_in_text(0, page.push_val) if page.stack is not None and len(page.stack_lst) == 0 else page.animate,
-        *page.stack.push(page.push_val) if page.stack is not None and len(page.stack_lst) > 0 else [],
+        page.stack.animate.change_word_in_text(0, page.push_val) if page.stack is not None and page.stepped is False else page.animate,
+        *page.stack.push(page.push_val) if page.stack is not None and page.stepped else [],
         run_time=run_time,
     )
     scene.wait(run_time)
@@ -303,6 +304,8 @@ class LruPageReplacement(PageReplacement):
     def cal_stack(self, step):
         # 不缺页
         for j in range(len(self.stack_lst)):
+            if len(self.stack_lst) > 0:
+                self.stepped = True
             if self.stack_lst[j] == self.page_lst[step]:
                 popped = self.stack_lst.pop(j)
                 self.stack_lst.append(popped)
@@ -311,7 +314,7 @@ class LruPageReplacement(PageReplacement):
         # 新增页面
         if len(self.stack_lst) < self.page_frame_num:
             self.stack_lst.append(self.page_lst[step])
-            return None, self.page_lst[step]
+            return "pass", self.page_lst[step]
         # 缺页
         else:
             self.stack_lst.pop(0)
