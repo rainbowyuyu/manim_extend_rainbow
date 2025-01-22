@@ -152,6 +152,7 @@ class PageReplacement(Page):
         self.frame_expect = 0
         self.page_expect = 0
         self.stack_lst = []
+        self.stack = None
         self.pop_index = None
         self.push_val = 0
         self.stepped = False
@@ -224,16 +225,25 @@ def step_on(
     scene.wait(run_time)
     scene.play(page.page_highlight.animate.move_to(page.page_frame[page.frame_expect]), run_time=run_time)
     scene.play(Indicate(page.opt_frame[page.frame_expect]), run_time=run_time)
+    pop_animate = [page.page_frame.animate.change_word_in_text(page.frame_expect, page.page_lst[step], 0.5)]
+    if page.stack is not None and page.pop_index != "pass":
+        pop_animate.extend(page.stack.pop(page.pop_index))
+
     scene.play(
-        page.page_frame.animate.change_word_in_text(page.frame_expect, page.page_lst[step], 0.5),
-        *page.stack.pop(page.pop_index) if page.stack is not None and page.pop_index != "pass" else [],
+        *pop_animate,
         run_time=run_time,
     )
-    scene.play(
+
+    push_animate = [
         page.opt_frame[page.frame_expect].animate.move_to(page.pages[page.page_expect]),
-        page.missing_tracker.animate.set_value(page.loss_page/(step+1)),
-        page.stack.animate.change_word_in_text(0, page.push_val) if page.stack is not None and page.stepped is False else page.animate,
-        *page.stack.push(page.push_val) if page.stack is not None and page.stepped else [],
+        page.missing_tracker.animate.set_value(page.loss_page / (step + 1)),
+    ]
+    if page.stack is not None and page.stepped is False:
+        push_animate.append(page.stack.animate.change_word_in_text(0, page.push_val))
+    if page.stack is not None and page.stepped:
+        push_animate.extend(page.stack.push(page.push_val))
+    scene.play(
+        *push_animate,
         run_time=run_time,
     )
     scene.wait(run_time)
@@ -253,16 +263,17 @@ class OptPageReplacement(PageReplacement):
             return len(self.page_lst) - 1
 
         # 已有页面
-        for j in range(self.page_frame_num):
-            if self.page_lst[step] == self.page_lst[self.page_frame_lst[j]]:
-                self.page_frame_lst[j] = get_opt(step)
-                return j, get_opt(step)
+        if len(self.page_frame_lst) != 0:
+            for j in range(len(self.page_frame_lst)):
+                if self.page_lst[step] == self.page_lst[self.page_frame_lst[j]]:
+                    self.page_frame_lst[j] = get_opt(step)
+                    return j, get_opt(step)
 
         # 页面未填满
         if len(self.page_frame_lst) < self.page_frame_num:
             self.page_frame_lst.append(get_opt(step))
             self.loss_page += 1
-            return step, get_opt(step)
+            return self.loss_page - 1, get_opt(step)
 
         # 缺页中断
         else:
@@ -285,21 +296,23 @@ class LruPageReplacement(PageReplacement):
                     return i
             return 0
 
-        if len(self.page_frame_lst) < self.page_frame_num:
-            self.page_frame_lst.append(get_lru(step))
-            self.loss_page += 1
-            return step, get_lru(step)
-        else:
-            for j in range(self.page_frame_num):
+        if len(self.page_frame_lst) != 0:
+            for j in range(len(self.page_frame_lst)):
                 if self.page_lst[step] == self.page_lst[self.page_frame_lst[j]]:
                     self.page_frame_lst[j] = get_lru(step)
                     return j, get_lru(step)
 
-        min_opt_id = self.page_frame_lst.index(min(self.page_frame_lst))
-        new_exp = get_lru(step)
-        self.page_frame_lst[min_opt_id] = new_exp
-        self.loss_page += 1
-        return min_opt_id, new_exp
+        if len(self.page_frame_lst) < self.page_frame_num:
+            self.page_frame_lst.append(get_lru(step))
+            self.loss_page += 1
+            return self.loss_page - 1, get_lru(step)
+
+        else:
+            min_opt_id = self.page_frame_lst.index(min(self.page_frame_lst))
+            new_exp = get_lru(step)
+            self.page_frame_lst[min_opt_id] = new_exp
+            self.loss_page += 1
+            return min_opt_id, new_exp
 
     def cal_stack(self, step):
         # 不缺页
