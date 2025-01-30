@@ -44,12 +44,14 @@ class Page(VGroup):
             page_frame_num: int = 3,
             one_step=(1.5, 0.45),
             color_lst: list = None,
+            need_stack: bool = True,
     ):
         super().__init__()
 
         self.page_lst = page_lst
         self.one_step = one_step
         self.loss_page = 0
+        self.need_stack = need_stack
 
         if color_lst is None:
             color_lst = [RED, ORANGE, GREEN, TEAL, BLUE, PURPLE]
@@ -110,8 +112,9 @@ class Page(VGroup):
             # self.opt_frame,
             self.page_highlight,
             self.missing_rate,
-            self.stack
         )
+        if self.need_stack:
+            self.add(self.stack)
         # 至于顶层
         self.page_highlight.z_index = 5
 
@@ -145,14 +148,14 @@ class PageReplacement(Page):
     def __init__(
             self,
             page_lst: list,
+            page_frame_num: int = 3,
             **kwargs,
     ):
-        super().__init__(page_lst, **kwargs)
+        super().__init__(page_lst, page_frame_num, **kwargs)
         self.page_frame_lst = []
         self.frame_expect = 0
         self.page_expect = 0
         self.stack_lst = []
-        self.stack = None
         self.pop_index = None
         self.push_val = 0
         self.stepped = False
@@ -201,6 +204,15 @@ class PageReplacement(Page):
         if self.stack:
             self.pop_index, self.push_val = self.cal_stack(step)
 
+    def stack_step_check(self):
+        """
+        检查是否推近来改变栈首是变换函数做压入弹出操作
+        :return: self
+        """
+        if len(self.stack_lst) > 0:
+            self.stepped = True
+        return self
+
 
 def step_on(
         scene: Scene,
@@ -240,7 +252,7 @@ def step_on(
     ]
     if page.stack is not None and page.stepped is False:
         push_animate.append(page.stack.animate.change_word_in_text(0, page.push_val))
-    if page.stack is not None and page.stepped:
+    if page.stack is not None and page.stepped and page.push_val != "pass":
         push_animate.extend(page.stack.push(page.push_val))
     scene.play(
         *push_animate,
@@ -253,6 +265,13 @@ class OptPageReplacement(PageReplacement):
     """
     OPT页面置换算法
     """
+    def __init__(
+            self,
+            page_lst: list,
+            page_frame_num: int = 3,
+            **kwargs
+    ):
+        super().__init__(page_lst, page_frame_num, need_stack=False, **kwargs)
 
     def cal_func(self, step):
         # 获取opt
@@ -288,6 +307,13 @@ class LruPageReplacement(PageReplacement):
     """
     LRU页面置换算法
     """
+    def __init__(
+            self,
+            page_lst: list,
+            page_frame_num: int = 3,
+            **kwargs
+    ):
+        super().__init__(page_lst, page_frame_num, need_stack=True, **kwargs)
 
     def cal_func(self, step):
         def get_lru(step):
@@ -317,8 +343,7 @@ class LruPageReplacement(PageReplacement):
     def cal_stack(self, step):
         # 不缺页
         for j in range(len(self.stack_lst)):
-            if len(self.stack_lst) > 0:
-                self.stepped = True
+            self.stack_step_check()
             if self.stack_lst[j] == self.page_lst[step]:
                 popped = self.stack_lst.pop(j)
                 self.stack_lst.append(popped)
@@ -339,16 +364,42 @@ class FifoPageReplacement(PageReplacement):
     """
     FIFO页面置换算法
     """
+    def __init__(
+            self,
+            page_lst: list,
+            page_frame_num: int = 3,
+            **kwargs
+    ):
+        super().__init__(page_lst, page_frame_num, need_stack=True, **kwargs)
+
     def cal_func(self, step):
+        if len(self.page_frame_lst) != 0:
+            for j in range(len(self.page_frame_lst)):
+                if self.page_lst[step] == self.page_lst[self.page_frame_lst[j]]:
+                    return j, step
+
         if len(self.page_frame_lst) < self.page_frame_num:
             self.page_frame_lst.append(step)
             self.loss_page += 1
             return step, step
         else:
-            for j in range(self.page_frame_num):
-                if self.page_lst[step] == self.page_lst[self.page_frame_lst[j]]:
-                    return j, step
+            self.page_frame_lst[self.loss_page % self.page_frame_num] = step
+            self.loss_page += 1
+            return (self.loss_page - 1) % self.page_frame_num, step
 
-        self.page_frame_lst[self.loss_page % self.page_frame_num] = step
-        self.loss_page += 1
-        return (self.loss_page - 1) % self.page_frame_num, step
+    def cal_stack(self, step):
+        # 不缺页
+        for j in range(len(self.stack_lst)):
+            self.stack_step_check()
+            if self.stack_lst[j] == self.page_lst[step]:
+                return "pass", "pass"
+
+        # 新增页面
+        if len(self.stack_lst) < self.page_frame_num:
+            self.stack_lst.append(self.page_lst[step])
+            return "pass", self.page_lst[step]
+        # 缺页
+        else:
+            self.stack_lst.pop(0)
+            self.stack_lst.append(self.page_lst[step])
+            return 0, self.page_lst[step]

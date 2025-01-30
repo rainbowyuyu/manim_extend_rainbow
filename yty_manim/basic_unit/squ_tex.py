@@ -245,7 +245,7 @@ class SquTexSlide(SquTex):
 
     def pop(
             self,
-            index: int | str = -1,
+            index: int = -1,
             force_center=False
     ):
         """
@@ -254,9 +254,6 @@ class SquTexSlide(SquTex):
         :param force_center: 强制居中
         :return: all_the_animate
         """
-        if index == "pass":
-            return []
-
         all_the_animate = []
         center = self.get_center()
         cp = self.copy()
