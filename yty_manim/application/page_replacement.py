@@ -8,10 +8,10 @@ from manim import *
 __all__ = (
     "Page",
     "PageReplacement",
-    "step_on",
     "OptPageReplacement",
     "LruPageReplacement",
     "FifoPageReplacement",
+    "ClockPageReplacement",
     # 保留的接口，可以写入其他页面置换算法
 )
 
@@ -51,6 +51,7 @@ class Page(VGroup):
         self.page_lst = page_lst
         self.one_step = one_step
         self.loss_page = 0
+        self.stack = None
         self.need_stack = need_stack
 
         if color_lst is None:
@@ -141,7 +142,7 @@ class PageReplacement(Page):
     >>>         self.add(p)
     >>>         self.wait()
     >>>         for i in range(len(input_lst)-1):
-    >>>             step_on(self,p,i)
+    >>>            p.step_on(self,i)
 
     """
 
@@ -213,52 +214,51 @@ class PageReplacement(Page):
             self.stepped = True
         return self
 
+    def step_on(
+            self,
+            scene: Scene,
+            step,
+            run_time=1,
+    ):
+        """
+        OPT,LRU,FIFO等基础页面置换算法的步进函数
+        CLOCK和改进型CLOCK需要使用保留的接口进行重写
+        :param scene: 场景接口，一般为self
+        :param step: 当前步骤
+        :param run_time: 运行时间
+        :return: None
+        """
+        self.update_expect(step)
+        scene.play(
+            self.page_frame.animate.shift(RIGHT * self.one_step[0] * self.one_step[1]),
+            self.page_highlight.animate.move_to(self.pages[step]),
+            run_time=run_time,
+        )
+        scene.wait(run_time)
+        scene.play(self.page_highlight.animate.move_to(self.page_frame[self.frame_expect]), run_time=run_time)
+        scene.play(Indicate(self.opt_frame[self.frame_expect]), run_time=run_time)
+        pop_animate = [self.page_frame.animate.change_word_in_text(self.frame_expect, self.page_lst[step], 0.5)]
+        if self.stack is not None and self.pop_index != "pass":
+            pop_animate.extend(self.stack.pop(self.pop_index))
 
-def step_on(
-        scene: Scene,
-        page: PageReplacement,
-        step,
-        run_time=1,
-):
-    """
-    步进函数
-    :param scene: 场景接口，一般为self
-    :param page: 页面
-    :param step: 当前步骤
-    :param run_time: 运行时间
-    :return: None
-    """
-    page.update_expect(step)
-    scene.play(
-        page.page_frame.animate.shift(RIGHT * page.one_step[0] * page.one_step[1]),
-        page.page_highlight.animate.move_to(page.pages[step]),
-        run_time=run_time,
-    )
-    scene.wait(run_time)
-    scene.play(page.page_highlight.animate.move_to(page.page_frame[page.frame_expect]), run_time=run_time)
-    scene.play(Indicate(page.opt_frame[page.frame_expect]), run_time=run_time)
-    pop_animate = [page.page_frame.animate.change_word_in_text(page.frame_expect, page.page_lst[step], 0.5)]
-    if page.stack is not None and page.pop_index != "pass":
-        pop_animate.extend(page.stack.pop(page.pop_index))
+        scene.play(
+            *pop_animate,
+            run_time=run_time,
+        )
 
-    scene.play(
-        *pop_animate,
-        run_time=run_time,
-    )
-
-    push_animate = [
-        page.opt_frame[page.frame_expect].animate.move_to(page.pages[page.page_expect]),
-        page.missing_tracker.animate.set_value(page.loss_page / (step + 1)),
-    ]
-    if page.stack is not None and page.stepped is False:
-        push_animate.append(page.stack.animate.change_word_in_text(0, page.push_val))
-    if page.stack is not None and page.stepped and page.push_val != "pass":
-        push_animate.extend(page.stack.push(page.push_val))
-    scene.play(
-        *push_animate,
-        run_time=run_time,
-    )
-    scene.wait(run_time)
+        push_animate = [
+            self.opt_frame[self.frame_expect].animate.move_to(self.pages[self.page_expect]),
+            self.missing_tracker.animate.set_value(self.loss_page / (step + 1)),
+        ]
+        if self.stack is not None and self.stepped is False:
+            push_animate.append(self.stack.animate.change_word_in_text(0, self.push_val))
+        if self.stack is not None and self.stepped and self.push_val != "pass":
+            push_animate.extend(self.stack.push(self.push_val))
+        scene.play(
+            *push_animate,
+            run_time=run_time,
+        )
+        scene.wait(run_time)
 
 
 class OptPageReplacement(PageReplacement):
@@ -403,3 +403,33 @@ class FifoPageReplacement(PageReplacement):
             self.stack_lst.pop(0)
             self.stack_lst.append(self.page_lst[step])
             return 0, self.page_lst[step]
+
+
+class ClockPageReplacement(PageReplacement):
+    """
+    CLOCK页面置换算法
+
+    这里将cal_stack,cal_func,step_on的接口函数全部进行逻辑的重写，
+    传递的关系为先判断栈的滑动，再计算页框的内容再进行步进
+    """
+    def __init__(
+            self,
+            page_lst: list,
+            page_frame_num: int = 5,
+            **kwargs
+    ):
+        super().__init__(page_lst, page_frame_num, need_stack=True, **kwargs)
+
+    def cal_stack(self, step):
+        pass
+
+    def cal_func(self, step):
+        pass
+
+    def step_on(
+            self,
+            scene: Scene,
+            step,
+            run_time=1,
+    ):
+        pass
