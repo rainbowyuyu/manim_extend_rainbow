@@ -182,10 +182,9 @@ class PageReplacement(Page):
     def init_stack(self):
         """
         创建栈接口
-        :return: 如果有栈结构构造栈的SquTex，没有则保持None，返回self
+        :return: 构造栈的SquTex
         """
-        self.stack = None
-        return self
+        pass
 
     def cal_stack(self, step):
         """

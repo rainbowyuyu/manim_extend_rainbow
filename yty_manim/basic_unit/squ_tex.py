@@ -174,6 +174,25 @@ class SquTex(VGroup):
         self[index][1].move_to(self[index][0])
         return self
 
+    def get_tex(
+            self,
+            return_type=str,
+    ):
+        """
+        获取SquTex中的文字列表
+        :param return_type:返回格式：包含 `int` 和 `str`
+        :return: 更新在self.tex中的文字
+        """
+        self.tex = []
+        for i in range(len(self)):
+            if return_type is str:
+                self.tex.extend(self[i][1].original_text)
+            elif return_type is int:
+                self.tex.append(int(self[i][1].original_text))
+            else:
+                raise TypeError("return_type must be `str` or `int`")
+        return self.tex
+
 
 class SquTexSlide(SquTex):
     """
