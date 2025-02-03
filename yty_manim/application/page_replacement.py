@@ -420,6 +420,14 @@ class ClockPageReplacement(PageReplacement):
         super().__init__(page_lst, page_frame_num, need_stack=True, **kwargs)
 
     def cal_stack(self, step):
+        """
+        CLOCK计算循环队列滑动或缺页的方式，
+        如果不缺页，就滑动标记，
+        如果缺页就当前替换。
+        :param step: 当前步骤
+        :return: 轮询的间隔差值或缺页 `pass`
+        """
+        text_lst = self.stack.get_tex(int)
         pass
 
     def cal_func(self, step):
