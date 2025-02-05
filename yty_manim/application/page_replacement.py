@@ -129,6 +129,12 @@ class PageReplacement(Page):
     -----
 
     - 通过保留接口完成页面置换算法每步演示
+    - 整个页面置换算法接口保留了以下几个框架
+        1. 栈结构的创建规则
+        2. 栈结构的运算规则
+        3. 当前页表的计算规则
+        4. 步进函数的规则规则
+    - 保留框架后可以自由改动串联规则
 
     Examples
     --------
@@ -200,9 +206,9 @@ class PageReplacement(Page):
         :param step: 当前步骤
         :return: None
         """
-        self.frame_expect, self.page_expect = self.cal_func(step)
         if self.stack:
             self.pop_index, self.push_val = self.cal_stack(step)
+        self.frame_expect, self.page_expect = self.cal_func(step)
 
     def stack_step_check(self):
         """
@@ -421,19 +427,62 @@ class ClockPageReplacement(PageReplacement):
 
         # 定位栈指针
         self.pointer = Triangle(fill_opacity=0.5)
-        self.pointer.scale(0.25).shift(UP+LEFT*(1 - 0.5*(self.page_frame_num % 2))).set_color(YELLOW)
+        self.pointer.scale(0.25).shift(UP+self.page_frame_num / 2 * LEFT).set_color(YELLOW)
         self.add(self.pointer)
+
+        # 当前替换
+        self.changer = None
+
+        # 颜色列表
+        self.color_lst = []
+
+        # 初始化构建栈
+        self.init_stack()
+
+    def init_stack(self):
+        init_lst = []
+        seen = set()
+
+        # 获取不重复的页面列表
+        for item in self.page_lst:
+            if item not in seen:
+                init_lst.append(item)
+                seen.add(item)
+            if len(init_lst) >= self.page_frame_num:
+                break
+
+        # 压栈
+        for i in range(len(init_lst)):
+            if i == 0:
+                self.stack.change_word_in_text(0, init_lst[i])
+            else:
+                self.stack.push(init_lst[i])
 
     def cal_stack(self, step):
         """
         CLOCK计算循环队列滑动或缺页的方式，
         如果不缺页，就滑动标记，
-        如果缺页就当前替换。
+        如果缺页就寻找替换页面。
         :param step: 当前步骤
-        :return: 轮询的间隔差值或缺页 `pass`
+        :return: 轮询的间隔差值和是缺页
         """
-        text_lst = self.stack.get_tex(int)
-        pass
+        # 获取当前参数
+        self.stack_lst = self.stack.get_tex_lst(int)
+        self.color_lst = self.stack.get_color_lst()
+
+        # 不缺页
+        for j in range(len(self.stack_lst)):
+            self.stack_step_check()
+            if self.stack_lst[j] == self.page_lst[step]:
+                return j, False
+
+        # 缺页
+        for j in range(len(self.color_lst)):
+            if self.color_lst[j] == BLUE:
+                return j, True
+
+        # 全不缺页过
+        return 0, True
 
     def cal_func(self, step):
         pass

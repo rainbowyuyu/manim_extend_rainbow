@@ -174,14 +174,14 @@ class SquTex(VGroup):
         self[index][1].move_to(self[index][0])
         return self
 
-    def get_tex(
+    def get_tex_lst(
             self,
             return_type=str,
     ):
         """
         获取SquTex中的文字列表
         :param return_type:返回格式：包含 `int` 和 `str`
-        :return: 更新在self.tex中的文字
+        :return: 更新在self.tex中的文字列表
         """
         self.tex = []
         for i in range(len(self)):
@@ -192,6 +192,16 @@ class SquTex(VGroup):
             else:
                 raise TypeError("return_type must be `str` or `int`")
         return self.tex
+
+    def get_color_lst(self):
+        """
+        获取SquTex中的颜色列表
+        :return: 颜色列表
+        """
+        color_lst = []
+        for i in range(len(self)):
+            color_lst.append(self[i][1].color)
+        return color_lst
 
 
 class SquTexSlide(SquTex):
