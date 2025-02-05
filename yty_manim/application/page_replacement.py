@@ -419,6 +419,11 @@ class ClockPageReplacement(PageReplacement):
     ):
         super().__init__(page_lst, page_frame_num, need_stack=True, **kwargs)
 
+        # 定位栈指针
+        self.pointer = Triangle(fill_opacity=0.5)
+        self.pointer.scale(0.25).shift(UP+LEFT*(1 - 0.5*(self.page_frame_num % 2))).set_color(YELLOW)
+        self.add(self.pointer)
+
     def cal_stack(self, step):
         """
         CLOCK计算循环队列滑动或缺页的方式，
