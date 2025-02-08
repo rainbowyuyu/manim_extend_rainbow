@@ -464,7 +464,7 @@ class ClockPageReplacement(PageReplacement):
         如果不缺页，就滑动标记，
         如果缺页就寻找替换页面。
         :param step: 当前步骤
-        :return: 轮询的间隔差值和是缺页
+        :return: 轮询的间隔差值和是否缺页
         """
         # 获取当前参数
         self.stack_lst = self.stack.get_tex_lst(int)
