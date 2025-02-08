@@ -29,7 +29,6 @@ gradient_dict = dict(
     rice_white=["#ffefba", "#ffffff"],
     blue_gray=["#c9d6ff", "#e2e2e2"],
     pink_orange=["#ffafbd", "#ffc3a0"])
-
 # 形状字典
 typedict = {
     "default_type": {
