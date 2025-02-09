@@ -10,6 +10,7 @@ text_font = [
 
 # 渐变字典
 gradient_dict = dict(
+    rainbow_color=[RED, ORANGE, YELLOW, GREEN, TEAL, BLUE, PURPLE],
     favourite=["#84fab0", "#8fd3f4"],
     Rainy_Ashville=["#fbc2eb", "#a6c1ee"],
     Sunny_Morning=["#f6d365", "#fda085"],
@@ -29,6 +30,7 @@ gradient_dict = dict(
     rice_white=["#ffefba", "#ffffff"],
     blue_gray=["#c9d6ff", "#e2e2e2"],
     pink_orange=["#ffafbd", "#ffc3a0"])
+
 # 形状字典
 typedict = {
     "default_type": {
