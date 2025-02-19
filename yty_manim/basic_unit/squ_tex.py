@@ -58,6 +58,8 @@ class SquTex(VGroup):
             font="",
             buff=0,
             arrange_direction=RIGHT,
+            text_type=Text,
+            str_need_split=True,
             **kwargs
     ):
         self.tex = tex
@@ -66,21 +68,65 @@ class SquTex(VGroup):
         self.distance = np.array((0.0, 0.0, 0.0))
         self.font = font
         self.settings = kwargs
+        self.text_type = text_type
+        self.str_need_split = str_need_split
+        self.kwargs = kwargs
 
         super().__init__()
-        for i in range(len(self.tex)):
-            v = VGroup(
-                Square(**kwargs),
-                Text(f"{self.tex[i]}", font=self.font),
-            )
-            self.add(v)
+        if self.str_need_split:
+            try:
+                self._default_type()
+            except IndexError:
+                self._without_split_type()
+        else:
+            self._without_split_type()
         self._construct()
 
+    def _default_type(self):
+        """
+        基础款的默认构造
+        :return: self
+        """
+        for i in range(len(self.tex)):
+            v = VGroup(
+                Square(**self.kwargs),
+            )
+            if self.text_type is MathTex:
+                v.add(self.text_type(f"{self.tex[i]}"))
+            else:
+                v.add(self.text_type(f"{self.tex[i]}", font=self.font))
+            self.add(v)
+            return self
+
+    def _without_split_type(self):
+        """
+        不分隔的构造方式
+        :return: self
+        """
+        v = VGroup(
+            Square(**self.kwargs),
+        )
+        if self.text_type is MathTex:
+            v.add(self.text_type(self.tex))
+        else:
+            v.add(self.text_type(self.tex, font=self.font))
+        self.add(v)
+        return self
+
     def _construct(self):
+        """
+        位置的构造
+        :return: self
+        """
         self.arrange(buff=self.buff, direction=self.arrange_direction)
         self.update_distance()
+        return self
 
     def update_distance(self):
+        """
+        更新每个块之间的距离
+        :return: self
+        """
         cp = self[0].copy()
         cp.next_to(self[0], self.arrange_direction, buff=self.buff)
         self.distance = np.array((
@@ -88,6 +134,7 @@ class SquTex(VGroup):
             cp.get_center()[1] - self[0].get_center()[1],
             cp.get_center()[2] - self[0].get_center()[2],
         ))
+        return self
 
     def add_bracket(
             self,

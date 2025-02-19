@@ -27,7 +27,7 @@ class ScreenCycle(VGroup):
     >>>             "Hello World",
     >>>             "Hell Worl",
     >>>             "Hel Wor",
-    >>>             "HE Wo",
+    >>>             "He Wo",
     >>>         ]
     >>>         s = ScreenCycle(text_list)
     >>>         self.add(s)
