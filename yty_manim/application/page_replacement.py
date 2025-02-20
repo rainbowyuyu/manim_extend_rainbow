@@ -479,6 +479,8 @@ class ClockPageReplacement(PageReplacement):
         # 缺页
         for j in range(len(self.color_lst)):
             if self.color_lst[j] == BLUE:
+                self.changer = self.stack_lst[j]
+                self.stack_lst[j] = self.page_lst[step]
                 return j, True
 
         # 全不缺页过
