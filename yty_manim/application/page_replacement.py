@@ -206,7 +206,7 @@ class PageReplacement(Page):
         :param step: 当前步骤
         :return: None
         """
-        if self.stack:
+        if self.need_stack:
             self.pop_index, self.push_val = self.cal_stack(step)
         self.frame_expect, self.page_expect = self.cal_func(step)
 
@@ -243,7 +243,7 @@ class PageReplacement(Page):
         scene.play(self.page_highlight.animate.move_to(self.page_frame[self.frame_expect]), run_time=run_time)
         scene.play(Indicate(self.opt_frame[self.frame_expect]), run_time=run_time)
         pop_animate = [self.page_frame.animate.change_word_in_text(self.frame_expect, self.page_lst[step], 0.5)]
-        if self.stack is not None and self.pop_index != "pass":
+        if self.need_stack and self.pop_index != "pass":
             pop_animate.extend(self.stack.pop(self.pop_index))
 
         scene.play(
@@ -255,9 +255,9 @@ class PageReplacement(Page):
             self.opt_frame[self.frame_expect].animate.move_to(self.pages[self.page_expect]),
             self.missing_tracker.animate.set_value(self.loss_page / (step + 1)),
         ]
-        if self.stack is not None and self.stepped is False:
+        if self.need_stack and self.stepped is False:
             push_animate.append(self.stack.animate.change_word_in_text(0, self.push_val))
-        if self.stack is not None and self.stepped and self.push_val != "pass":
+        if self.need_stack and self.stepped and self.push_val != "pass":
             push_animate.extend(self.stack.push(self.push_val))
         scene.play(
             *push_animate,

@@ -87,16 +87,21 @@ class SquTex(VGroup):
         基础款的默认构造
         :return: self
         """
-        for i in range(len(self.tex)):
-            v = VGroup(
-                Square(**self.kwargs),
-            )
-            if self.text_type is MathTex:
-                v.add(self.text_type(f"{self.tex[i]}"))
-            else:
-                v.add(self.text_type(f"{self.tex[i]}", font=self.font))
-            self.add(v)
-            return self
+        if self.text_type is MathTex:
+            for i in range(len(self.tex)):
+                v = VGroup(
+                    Square(**self.kwargs),
+                    MathTex(f"{self.tex[i]}"),
+                )
+                self.add(v)
+        else:
+            for i in range(len(self.tex)):
+                v = VGroup(
+                    Square(**self.kwargs),
+                    Text(f"{self.tex[i]}", font=self.font),
+                )
+                self.add(v)
+        return self
 
     def _without_split_type(self):
         """
