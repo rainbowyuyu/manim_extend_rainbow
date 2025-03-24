@@ -15,7 +15,7 @@ pip install -r requirements.txt
 
 文件结构：  
 yty_manim  
-├──[examples.ipynb](examples.ipynb)   
+├──[examples.ipynb](examples/examples.ipynb)   
 ├──[disposition](yty_manim%2Fdisposition)  
 │ ├── [speed_rate_fuc.py](yty_manim%2Fdisposition%2Fspeed_rate_fuc.py)  
 │ └── [fonts_and_colors.py](yty_manim%2Fdisposition%2Ffonts_and_colors.py)  
