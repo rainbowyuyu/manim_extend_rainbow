@@ -501,3 +501,28 @@ class SquTexSlide(SquTex):
 
         self._slide_order(direction, st_input)
         return all_the_animate
+
+
+class Stack(SquTexSlide):
+    """
+    展示栈结构的数据库
+    继承于 :class:`~.SquTexSlide` ，
+
+    Notes
+    -----
+
+    - 在滑动数据块的基础上添加数据结构的变换特性，
+    - 使用 :method:`swap` 完成两数据块的交换
+    - 使用 :method:`reverse` 完成某个数据位置后的翻转
+    - 使用 :method:`add_pointer` 添加特定位置的指针
+
+    Examples
+    --------
+
+    """
+    def __init__(
+            self,
+            tex: str | list,
+            **kwargs,
+    ):
+        super().__init__(tex, **kwargs)

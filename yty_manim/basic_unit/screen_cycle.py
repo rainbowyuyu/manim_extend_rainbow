@@ -2,7 +2,7 @@
 # 标题画面屏幕轮播
 
 from typing_extensions import Self
-from manim.typing import Vector3
+from manim.typing import Vector3D
 from yty_manim.disposition.fonts_and_colors import *
 
 
@@ -97,7 +97,7 @@ class ScreenCycle(VGroup):
         pass
 
     def set_to_edge(
-        self, edge: Vector3 = LEFT, buff: float = DEFAULT_MOBJECT_TO_EDGE_BUFFER
+        self, edge: Vector3D = LEFT, buff: float = DEFAULT_MOBJECT_TO_EDGE_BUFFER
     ) -> Self:
         """
         标题前往边缘，隐藏其他
