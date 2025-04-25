@@ -5,12 +5,19 @@ For basic Manim knowledge, please refer to [manim](https://github.com/manimCommu
 [![language](https://img.shields.io/badge/language-English-blue)](README.md) [![language](https://img.shields.io/badge/language-中文-blue)](README-ch.md)
 ---
 
-### Installation:
-```bash
-git clone https://github.com/rainbowyuyu/manim_extend_rainbow.git
-cd ./manim_extend_rainbow
-pip install -r requirements.txt
-```
+### Installation Instructions:  
+1. **Configure the LaTeX environment first**  
+   - For detailed instructions, refer to [texlive](https://tug.org/texlive/)  
+   > [!Warning]  
+   > **WARNING:** Be sure to configure the LaTeX environment variables properly.  
+
+2. **Install dependencies**  
+   - Developed with `Python 3.10`, the minimum required version is `Python 3.8`.  
+   ```bash
+   git clone https://github.com/rainbowyuyu/manim_extend_rainbow.git
+   cd ./manim_extend_rainbow
+   pip install -r requirements.txt
+   ```
 
 ---
 

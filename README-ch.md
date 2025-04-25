@@ -5,7 +5,13 @@
 [![language](https://img.shields.io/badge/language-English-blue)](README.md) [![language](https://img.shields.io/badge/language-中文-blue)](README-ch.md)
 ---
 
-使用方法：
+使用方法： 
+1. 需要先配置latex环境
+- 详细下载请参考 [texlive](https://tug.org/texlive/)
+> [!Warning]
+> **WARNING:** 注意配置latex的环境变量
+2. 安装依赖包
+- 基于 `python 3.10` 开发，最低版本不低于 `python 3.8`
 ```bash
 git clone https://github.com/rainbowyuyu/manim_extend_rainbow.git
 cd ./manim_extend_rainbow
