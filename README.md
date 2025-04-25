@@ -7,17 +7,17 @@ For basic Manim knowledge, please refer to [manim](https://github.com/manimCommu
 
 ### Installation Instructions:  
 1. **Configure the LaTeX environment first**  
-   - For detailed instructions, refer to [texlive](https://tug.org/texlive/)  
-   > [!Warning]  
-   > **WARNING:** Be sure to configure the LaTeX environment variables properly.  
+- For detailed instructions, refer to [texlive](https://tug.org/texlive/)  
+> [!Warning]  
+> **WARNING:** Be sure to configure the LaTeX environment variables properly.  
 
 2. **Install dependencies**  
-   - Developed with `Python 3.10`, the minimum required version is `Python 3.8`.  
-   ```bash
-   git clone https://github.com/rainbowyuyu/manim_extend_rainbow.git
-   cd ./manim_extend_rainbow
-   pip install -r requirements.txt
-   ```
+- Developed with `Python 3.10`, the minimum required version is `Python 3.8`.  
+```bash
+git clone https://github.com/rainbowyuyu/manim_extend_rainbow.git
+cd ./manim_extend_rainbow
+pip install -r requirements.txt
+```
 
 ---
 
