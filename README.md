@@ -2,12 +2,12 @@
 Improvements and additions to animation control and operations based on Manim.  
 For basic Manim knowledge, please refer to [manim](https://github.com/manimCommunity/manim)
 
-language: [English](README.md)   [Chinese](README-ch.md)
+[![language](https://img.shields.io/badge/language-English-blue)](README.md) [![language](https://img.shields.io/badge/language-中文-blue)](README-ch.md)
 ---
 
 ### Installation:
 ```bash
-git clone https://github.com/rainbowyuyu/manim_extend_rainbow
+git clone https://github.com/rainbowyuyu/manim_extend_rainbow.git
 cd ./manim_extend_rainbow
 pip install -r requirements.txt
 ```

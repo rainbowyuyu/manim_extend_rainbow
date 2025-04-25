@@ -2,13 +2,12 @@
 在manim基础上进行的动画控制和运算的改进或添加，
 基础的manim知识请参考[manim](https://github.com/manimCommunity/manim)
 
-语言: [英语](README.md)   [中文](README-ch.md)
-
+[![language](https://img.shields.io/badge/language-English-blue)](README.md) [![language](https://img.shields.io/badge/language-中文-blue)](README-ch.md)
 ---
 
 使用方法：
 ```bash
-git clone https://github.com/rainbowyuyu/manim_extend_rainbow
+git clone https://github.com/rainbowyuyu/manim_extend_rainbow.git
 cd ./manim_extend_rainbow
 pip install -r requirements.txt
 ```
