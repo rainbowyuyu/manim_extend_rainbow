@@ -108,23 +108,29 @@ class Page(VGroup):
             color=BLUE
         ).shift(self.DEFAULT_STACK_SHIFT)
 
+        # 基本的演示组件
+        self.basic_unit = VGroup()
+
     def _add_to_page(self):
         self.add(
             self.pages,
             self.page_frame,
-            # self.opt_frame,
+            self.opt_frame,
+            self.page_highlight,
+        )
+        self.basic_unit.add(
+            self.pages,
+            self.page_frame,
             self.page_highlight,
         )
         if self.need_stack:
             self.add(self.stack)
+            self.basic_unit.add(self.stack)
         if self.need_miss_rate:
             self.add(self.missing_rate)
+            self.basic_unit.add(self.missing_rate)
         # 至于顶层
         self.page_highlight.z_index = 5
-
-    def update_opt_frame(self):
-        for i in range(self.page_frame_num):
-            self.opt_frame[i].move_to(self.pages[i])
 
 
 class PageReplacement(Page):
@@ -173,7 +179,6 @@ class PageReplacement(Page):
         self.pop_index = None
         self.push_val = 0
         self.stepped = False
-        self.update_opt_frame()
 
     def cal_func(self, step):
         """
@@ -285,7 +290,6 @@ class OptPageReplacement(PageReplacement):
             **kwargs
     ):
         super().__init__(page_lst, page_frame_num, need_stack=False, **kwargs)
-        self.update_opt_frame()
 
     def cal_func(self, step):
         # 获取opt
@@ -328,7 +332,6 @@ class LruPageReplacement(PageReplacement):
             **kwargs
     ):
         super().__init__(page_lst, page_frame_num, **kwargs)
-        self.update_opt_frame()
 
     def cal_func(self, step):
         def get_lru(step):
@@ -386,7 +389,6 @@ class FifoPageReplacement(PageReplacement):
             **kwargs
     ):
         super().__init__(page_lst, page_frame_num, **kwargs)
-        self.update_opt_frame()
 
     def cal_func(self, step):
         if len(self.page_frame_lst) != 0:
