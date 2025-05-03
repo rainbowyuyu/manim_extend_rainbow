@@ -45,6 +45,7 @@ class Page(VGroup):
             one_step=(1.5, 0.45),
             color_lst: list = None,
             need_stack: bool = True,
+            need_miss_rate : bool = True,
     ):
         super().__init__()
 
@@ -53,6 +54,7 @@ class Page(VGroup):
         self.loss_page = 0
         self.stack = None
         self.need_stack = need_stack
+        self.need_miss_rate = need_miss_rate
 
         if color_lst is None:
             color_lst = [RED, ORANGE, GREEN, TEAL, BLUE, PURPLE]
@@ -112,10 +114,11 @@ class Page(VGroup):
             self.page_frame,
             # self.opt_frame,
             self.page_highlight,
-            self.missing_rate,
         )
         if self.need_stack:
             self.add(self.stack)
+        if self.need_miss_rate:
+            self.add(self.missing_rate)
         # 至于顶层
         self.page_highlight.z_index = 5
 
