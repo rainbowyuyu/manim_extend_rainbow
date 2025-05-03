@@ -355,12 +355,14 @@ class SquTexSlide(SquTex):
             st_input: SquTex | str | int,
             index=None,
             force_center=False,
+            force_color=False,
     ):
         """
         推入动画
         :param index: 位置
         :param st_input: 加入的数据块
         :param force_center: 强制居中
+        :param force_color: 强制统一颜色
         :return: all_the_animate
         """
         cp = self.copy()
@@ -372,7 +374,9 @@ class SquTexSlide(SquTex):
             st_color = st_input.get_color()
             st_input = st_input.tex
 
-        st_input = SquTexSlide(f"{st_input}", font=self.font, **self.settings).set_color(st_color)
+        st_input = SquTexSlide(f"{st_input}", font=self.font, **self.settings)
+        if force_color:
+            st_input.set_color(st_color)
 
         if index is None or index == len(self):
             st_input.next_to(self, direction=self.arrange_direction, buff=self.buff)
