@@ -122,6 +122,10 @@ class Page(VGroup):
         # 至于顶层
         self.page_highlight.z_index = 5
 
+    def update_opt_frame(self):
+        for i in range(self.page_frame_num):
+            self.opt_frame[i].move_to(self.pages[i])
+
 
 class PageReplacement(Page):
     """
@@ -169,6 +173,7 @@ class PageReplacement(Page):
         self.pop_index = None
         self.push_val = 0
         self.stepped = False
+        self.update_opt_frame()
 
     def cal_func(self, step):
         """
@@ -280,6 +285,7 @@ class OptPageReplacement(PageReplacement):
             **kwargs
     ):
         super().__init__(page_lst, page_frame_num, need_stack=False, **kwargs)
+        self.update_opt_frame()
 
     def cal_func(self, step):
         # 获取opt
@@ -322,6 +328,7 @@ class LruPageReplacement(PageReplacement):
             **kwargs
     ):
         super().__init__(page_lst, page_frame_num, **kwargs)
+        self.update_opt_frame()
 
     def cal_func(self, step):
         def get_lru(step):
@@ -379,6 +386,7 @@ class FifoPageReplacement(PageReplacement):
             **kwargs
     ):
         super().__init__(page_lst, page_frame_num, **kwargs)
+        self.update_opt_frame()
 
     def cal_func(self, step):
         if len(self.page_frame_lst) != 0:
