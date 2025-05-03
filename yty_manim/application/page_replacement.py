@@ -321,7 +321,7 @@ class LruPageReplacement(PageReplacement):
             page_frame_num: int = 3,
             **kwargs
     ):
-        super().__init__(page_lst, page_frame_num, need_stack=True, **kwargs)
+        super().__init__(page_lst, page_frame_num, **kwargs)
 
     def cal_func(self, step):
         def get_lru(step):
@@ -378,7 +378,7 @@ class FifoPageReplacement(PageReplacement):
             page_frame_num: int = 3,
             **kwargs
     ):
-        super().__init__(page_lst, page_frame_num, need_stack=True, **kwargs)
+        super().__init__(page_lst, page_frame_num, **kwargs)
 
     def cal_func(self, step):
         if len(self.page_frame_lst) != 0:
