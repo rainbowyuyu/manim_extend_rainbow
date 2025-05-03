@@ -366,10 +366,13 @@ class SquTexSlide(SquTex):
         cp = self.copy()
         all_the_animate = []
 
+        st_color = self.get_color()
+
         if isinstance(st_input, SquTex):
+            st_color = st_input.get_color()
             st_input = st_input.tex
 
-        st_input = SquTexSlide(f"{st_input}", font=self.font, **self.settings)
+        st_input = SquTexSlide(f"{st_input}", font=self.font, **self.settings).set_color(st_color)
 
         if index is None or index == len(self):
             st_input.next_to(self, direction=self.arrange_direction, buff=self.buff)
