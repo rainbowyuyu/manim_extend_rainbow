@@ -119,3 +119,42 @@ class ScreenCycle(VGroup):
         self[self.now_screen].center()
         self.set_opacity(1)
         return self
+
+
+class Directory(VGroup):
+    """
+    目录半成品，后期完善
+    """
+    def __init__(
+            self,
+            title: list,
+            **kwargs,
+    ):
+        super().__init__()
+        self.current = -1
+
+        text = VGroup()
+        dot = VGroup()
+        lines = VGroup()
+        for i in range(len(title)):
+            t = Text(title[i], **kwargs).scale(0.8).set_color(GRAY)
+            text.add(t)
+            d = Dot().scale(2)
+            dot.add(d)
+        text.arrange(DOWN, buff=0.8, aligned_edge=LEFT).to_edge(LEFT, buff=1.5)
+        for i in range(len(dot)):
+            dot[i].next_to(text[i], LEFT, buff=0.5).set_color(gradient_dict['rainbow_color'][i%7])
+
+        for i in range(len(title)-1):
+            l = Line(dot[i].get_center(), dot[i+1].get_center())
+            l.set_color_by_gradient(
+                [gradient_dict['rainbow_color'][i % 7+1],gradient_dict['rainbow_color'][i%7]]
+            )
+            lines.add(l)
+
+        dot.set_z_index(1)
+        self.add(text,dot,lines)
+
+    def step_forward(self):
+        if self.current != -1:
+            self[0][self.current].scale(0.8).set_color(GRAY)

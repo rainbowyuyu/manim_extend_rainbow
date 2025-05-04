@@ -11,6 +11,7 @@ text_font = [
 # 渐变字典
 gradient_dict = dict(
     rainbow_color=[RED, ORANGE, YELLOW, GREEN, TEAL, BLUE, PURPLE],
+    rainbow_color_reverse=[PURPLE, BLUE, TEAL, GREEN, YELLOW, ORANGE, RED],
     favourite=["#84fab0", "#8fd3f4"],
     Rainy_Ashville=["#fbc2eb", "#a6c1ee"],
     Sunny_Morning=["#f6d365", "#fda085"],
