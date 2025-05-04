@@ -7,6 +7,30 @@ from yty_manim.disposition.fonts_and_colors import *
 import random
 
 class TitleAnimate(SquTexSlide):
+    """
+    animate for title
+
+    Examples:
+    ------
+
+    >>> class TitleIntroduction(Scene):
+    >>>     def construct(self):
+    >>>
+    >>>         ta = TitleAnimate(
+    >>>             "rainbow鱼",
+    >>>             font=text_font[0],
+    >>>             side_length=1.5,
+    >>>             fill_opacity=0.5,
+    >>>             stroke_opacity=0.8
+    >>>         )
+    >>>         self.wait()
+    >>>         ta.generate(self,run_time=0.5)
+    >>>         self.wait(3)
+    >>>         ta.disappear(self,run_time=0.2,force_center=False)
+    >>>         self.wait(2)
+
+
+    """
     def __init__(
             self,
             tex: str | list,
