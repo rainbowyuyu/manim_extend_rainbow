@@ -2,8 +2,10 @@
 
 __all__ = (
     "matrix_yty",
-    "page_replacement"
+    "page_replacement",
+    "title_animate"
 )
 
 from .matrix_yty import *
 from .page_replacement import *
+from .title_animate import *
