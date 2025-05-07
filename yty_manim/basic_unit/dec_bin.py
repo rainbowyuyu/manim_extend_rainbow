@@ -77,14 +77,7 @@ class BinNumber:
 
     """
 
-    __version__: str = "1.1.6"
-
-    # 参数
-    dec_num: float | int | str
-    precision: int | None = None
-    symbolic_bit: int = 1
-    is_split: bool = False
-    bin_num: str = ""
+    __version__: str = "2.0.1"
 
     # 保留文字
     _sign = ""
@@ -95,9 +88,9 @@ class BinNumber:
     def __init__(
             self,
             dec_num: int | float | str | None = None,
-            precision=precision,
-            symbolic_bit=symbolic_bit,
-            is_split=is_split,
+            precision: int | None = None,
+            symbolic_bit: int = 1,
+            is_split: bool = False,
     ):
         if dec_num is None:
             self.dec_num = 0
@@ -264,10 +257,10 @@ class BinNumber:
         raise TypeError(f"Unsupported operand type(s) for /: 'BinNumber' and '{type(other).__name__}'")
 
 
-class Bin4SquTex(BinNumber, SquTexSlide):
+class Bin4SquTex(BinNumber):
     """
     二进制的manim接口
-    继承于 :class:`~.BinNumber` 和 :class:`~.SquTexSlide`，
+    继承于 :class:`~.BinNumber`，
 
     Notes
     -----
@@ -280,7 +273,6 @@ class Bin4SquTex(BinNumber, SquTexSlide):
 """
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.change_color()
         pass
 
     def color_logic(self):
