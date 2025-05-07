@@ -5,12 +5,16 @@ from manim import *
 
 class CodeStep(Code):
     """
+    code which can write use auto run_time paired with code length
 
     Examples
     ------
-    >>> for i in range(len(c1[2])):
-    >>>     c1.write_code(self,1)
-    >>>     self.wait(10)
+
+    >>> class CodeShow(Scene):
+    >>>     c1 = CodeStep("aaa")
+    >>>     for i in range(len(c1[2])):
+    >>>         c1.write_code(self,1,is_auto_runtime=True)
+    >>>         self.wait(10)
 
     """
     def __init__(

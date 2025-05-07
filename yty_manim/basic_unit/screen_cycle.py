@@ -31,13 +31,10 @@ class ScreenCycle(VGroup):
     >>>         ]
     >>>         s = ScreenCycle(text_list)
     >>>         self.add(s)
-    >>>         self.play(s.animate.step_forward())
+    >>>         for i in range(len(text_list)):
     >>>         self.play(s.animate.step_forward())
     >>>         self.play(s.animate.set_to_edge(UL))
     >>>         self.play(s.animate.set_back())
-    >>>         self.play(s.animate.step_forward())
-    >>>         self.play(s.animate.step_forward())
-    >>>         self.play(s.animate.step_forward())
 
     """
     def __init__(
@@ -123,7 +120,32 @@ class ScreenCycle(VGroup):
 
 class Directory(VGroup):
     """
-    目录半成品，后期完善
+    目录演示，
+    继承于 :class:`~.VGroup` ，
+
+    Notes
+    -----
+
+    - 最开始内容的目录展示
+
+    Examples:
+    ------
+
+    >>> class DirectoryPage(Scene):
+    >>>     def construct(self):
+    >>>         title = [
+    >>>                 "页面与页面置换",
+    >>>                 "抖动与belady",
+    >>>                 "页面置换算法",
+    >>>                 "栈结构",
+    >>>                 "编程代码"
+    >>>         ]
+    >>>         d = Directory(title,font = text_font[0])
+    >>>         d[1].set_color(GRAY)
+    >>>         self.play(Write(d[0:2]),run_time=2)
+    >>>         for i in range(len(title)):
+    >>>             d.step_forward(self)
+
     """
     def __init__(
             self,
@@ -132,12 +154,13 @@ class Directory(VGroup):
     ):
         super().__init__()
         self.current = -1
+        self.title = title
 
         text = VGroup()
         dot = VGroup()
         lines = VGroup()
-        for i in range(len(title)):
-            t = Text(title[i], **kwargs).scale(0.8).set_color(GRAY)
+        for i in range(len(self.title)):
+            t = Text(self.title[i], **kwargs).scale(0.8).set_color(GRAY)
             text.add(t)
             d = Dot().scale(2)
             dot.add(d)
@@ -145,7 +168,7 @@ class Directory(VGroup):
         for i in range(len(dot)):
             dot[i].next_to(text[i], LEFT, buff=0.5).set_color(gradient_dict['rainbow_color'][i%7])
 
-        for i in range(len(title)-1):
+        for i in range(len(self.title)-1):
             l = Line(dot[i].get_center(), dot[i+1].get_center())
             l.set_color_by_gradient(
                 [gradient_dict['rainbow_color'][i % 7+1],gradient_dict['rainbow_color'][i%7]]
@@ -155,6 +178,66 @@ class Directory(VGroup):
         dot.set_z_index(1)
         self.add(text,dot,lines)
 
-    def step_forward(self):
-        if self.current != -1:
-            self[0][self.current].scale(0.8).set_color(GRAY)
+    def create_line(
+            self,
+            scene: Scene,
+            index: int = None,
+            **kwargs,
+    ):
+        """
+        绘制连接线
+        :param scene: 场景类
+        :param index: 当前位置
+        :param kwargs: play的可变参数
+        :return: None
+        """
+        if index is None:
+            index = self.current
+        if index < 0:
+            pass
+        elif index >= len(self.title):
+            raise IndexError
+        else:
+            scene.play(
+                Create(self[2][index]),
+                **kwargs
+            )
+
+    def change_color(
+            self,
+            scene: Scene,
+            index: int = None,
+            **kwargs,
+    ):
+        """
+        改变文字和点的颜色
+        :param scene: 场景类
+        :param index: 当前位置
+        :param kwargs: 可变参数
+        :return: None
+        """
+        if index is None:
+            index = self.current + 1
+        scene.play(
+            self[0][index].animate.set_color(gradient_dict['rainbow_color'][index%7]),
+            self[1][index].animate.set_color(gradient_dict['rainbow_color'][index%7]),
+            **kwargs,
+        )
+
+    def step_forward(
+            self,
+            scene: Scene,
+            change_color_time = 1,
+            create_line_time = 5
+    ):
+        """
+        步进函数
+        :param scene: 场景类
+        :param change_color_time: 改变颜色时间
+        :param create_line_time: 改变线长时间
+        :return: None
+        """
+        self.change_color(scene, change_color_time)
+        self.create_line(scene, create_line_time)
+        self.current += 1
+
