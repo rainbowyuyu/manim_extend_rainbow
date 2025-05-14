@@ -11,10 +11,11 @@ class CodeStep(Code):
     ------
 
     >>> class CodeShow(Scene):
-    >>>     c1 = CodeStep("aaa")
-    >>>     for i in range(len(c1[2])):
-    >>>         c1.write_code(self,1,is_auto_runtime=True)
-    >>>         self.wait(10)
+    >>>     def construct(self):
+    >>>         c1 = CodeStep("aaa")
+    >>>         for i in range(len(c1[2])):
+    >>>             c1.write_code(self,1,is_auto_runtime=True)
+    >>>             self.wait(10)
 
     """
     def __init__(

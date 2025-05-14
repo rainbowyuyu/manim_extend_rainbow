@@ -356,6 +356,7 @@ class SquTexSlide(SquTex):
             index=None,
             force_center=False,
             force_color=False,
+            **kwargs
     ):
         """
         推入动画
@@ -374,7 +375,7 @@ class SquTexSlide(SquTex):
             st_color = st_input.get_color()
             st_input = st_input.tex
 
-        st_input = SquTexSlide(f"{st_input}", font=self.font, **self.settings)
+        st_input = SquTexSlide(f"{st_input}", font=self.font, **self.settings,**kwargs)
         if force_color:
             st_input.set_color(st_color)
 

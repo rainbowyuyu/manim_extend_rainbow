@@ -17,6 +17,7 @@ gradient_dict = dict(
     Sunny_Morning=["#f6d365", "#fda085"],
     Sunny_Morning_light=["#ffffc5", "#fff0d5"],
     Tempting_Azure=["#84fab0", "#8fd3f4"],
+    Tempting_Azure_dark=["#64C883", "#6297B5"],
     Child_Care=["#f794a4", "#fdd6bd"],
     blue_green_dark=["#051937", "#004d7a", "#008793", "#00bf72", "#a8eb12"],
     red_purple_blue=["#12c2e9", "#c471ed", "#f64f59"],
