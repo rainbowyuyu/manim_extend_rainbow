@@ -529,38 +529,37 @@ class Stack(SquTexSlide):
     --------
 
     - 1. 指针滑动`move_pointer`，直接使用play函数，返回一个静态的self
+    - 2. 元素交换`swap`，使用play时里面是一个动画组的序列解包
+    - 3. 元素翻转`reverse`，使用play时里面是一个动画组的序列解包
+    - 4. 重构`pop`和`push`，添加指针跟随
+
     >>> class StackClass(Scene):
     >>>     def construct(self):
-    >>>         lst = [1,2,3,4]
+    >>>         lst = [1,2,3,4,5]
     >>>         s = Stack(lst,pointer_direction=UP,need_pointer=True,**typedict["default_st_type"])
     >>>         for i in range(len(lst)):
     >>>             s[i].set_color(gradient_dict['rainbow_color'][i%7])
     >>>         self.play(Create(s))
-    >>>         for i in range(len(lst)):
+    >>>         for i in range(4):
     >>>             self.play(s.animate.move_pointer(i))
+    >>>         self.play(*s.swap(0,3))
+    >>>         for i in range(4):
+    >>>             self.play(s.animate.move_pointer(i))
+    >>>         self.play(*s.reverse())
+    >>>         self.play(s.animate.move_pointer(4))
+    >>>         self.play(*s.pop(-2))
+    >>>         self.play(*s.pop(-2))
     >>>         self.wait(2)
 
-    - 2. 元素交换`swap`，使用play时里面是一个动画组的序列解包，示例结合了pop函数
-    >>> class StackClass(Scene):
-    >>>     def construct(self):
-    >>>         lst = [1,2,3,4]
-    >>>         s = Stack(lst,pointer_direction=UP,need_pointer=True,**typedict["default_st_type"])
-    >>>         for i in range(len(lst)):
-    >>>             s[i].set_color(gradient_dict['rainbow_color'][i%7])
-    >>>         self.play(Create(s))
-    >>>         self.play(*s.swap(0,2,pointer_follow=True))
-    >>>         self.play(*s.pop(2))
-    >>>         self.wait(2)
 
 
     """
-
     def __init__(
             self,
             tex: str | list,
-            need_pointer=False,
-            pointer_type_cfg=typedict["default_pointer_type"],
-            pointer_direction=DOWN,
+            need_pointer = False,
+            pointer_type_cfg = typedict["default_pointer_type"],
+            pointer_direction = DOWN,
             **kwargs,
     ):
         super().__init__(tex, **kwargs)
@@ -577,10 +576,10 @@ class Stack(SquTexSlide):
 
         if need_pointer:
             self.pointer = Triangle(**self.pointer_type_cfg).scale(0.25)
-            self.add(self.pointer)
             angle = angle_between_vectors(UP, self.pointer_direction)
             self.pointer.rotate(angle)
             self.pointer.next_to(self[0], -self.pointer_direction, buff=0)
+            self.add(self.pointer)
 
     def move_pointer(
             self,
@@ -615,7 +614,7 @@ class Stack(SquTexSlide):
             self,
             index1,
             index2,
-            pointer_follow=True,
+            pointer_follow = True,
     ):
         """
         元素交换
@@ -634,36 +633,177 @@ class Stack(SquTexSlide):
             # 更新指针位置
             if self.point_index == index1 or self.point_index == index2:
                 all_the_animate.append(
-                    self.pointer.animate.next_to(self[self.point_index], -self.pointer_direction, buff=0))
+                    self.pointer.animate.next_to(self[self.point_index], -self.pointer_direction, buff=0)
+                )
         return all_the_animate
 
-    def reverse(
-            self,
-            pointer_follow=True,
+    def _reverse_index(
+        self,
+        start=0,
+        end=None
     ):
         """
-        翻转
+        内部反转索引逻辑
+        :param start: 反转开始位置
+        :param end: 反转结束位置
+        :return: self
+        """
+        if not end:
+            end = len(self) - 2  # 默认end是最后一个元素
+
+        elif end < 0:
+            end = len(self) - 1 + end
+
+        # 交换 start 和 end 之间的元素
+        while start < end:
+            # 调用 _swap_index 来交换两个元素
+            self._swap_index(start, end)
+            start += 1
+            end -= 1
+
+        return self
+
+
+    def reverse(
+        self,
+        start=0,
+        end=None,
+        pointer_follow=True,
+    ):
+        """
+        翻转指定范围的元素
+        :param pointer_follow: 是否指针跟随
+        :param start: 翻转开始位置
+        :param end: 翻转结束位置
+        :return: all_the_animate
+        """
+        if not end:
+            end = len(self) - 2  # 默认end是最后一个元素
+
+        elif end < 0:
+            end = len(self) - 1 + end
+
+        all_the_animate = []
+        # 翻转从start到end之间的元素
+        while start < end:
+            # 调用swap方法交换start和end位置的元素
+            all_the_animate.extend(self.swap(start, end, pointer_follow))
+            start += 1
+            end -= 1
+
+        return all_the_animate
+
+
+    def pop(
+        self,
+        index: int = -1,
+        force_center=False,
+        pointer_follow=True,
+    ):
+        """
+        弹出动画
+        :param index: 位置
+        :param force_center: 强制居中
         :param pointer_follow: 指针跟随
         :return: all_the_animate
         """
-        pass
+        if index < 0:
+            index -= 1
+        all_the_animate = []
+        center = self.get_center()
+        cp = self.copy()
 
-    def pop(
-            self,
-            index: int = -1,
-            force_center=False,
-            pointer_follow=True,
-    ):
-        pass
+        popped = self[index]
+        self.remove(popped)
+        all_the_animate.append(
+            FadeOut(popped, shift=np.array((self.distance[1], -self.distance[0], 0))),
+        )
+        for i in range(index, len(self)):
+            all_the_animate.append(self[i].animate.move_to(cp[i]))
+
+        if force_center:
+            all_the_animate.append(self.animate.move_to(center))
+
+        # 更新指针位置
+        if pointer_follow:
+            now_index = index
+            if now_index < 0:
+                now_index = len(self) - 2 + now_index
+            if self.point_index >= now_index:
+                self.point_index -= 1
+
+            all_the_animate.append(
+                self.pointer.animate.next_to(self[self.point_index], -self.pointer_direction, buff=0)
+            )
+
+        return all_the_animate
+
 
     def push(
-            self,
-            st_input: SquTex | str | int,
-            index=None,
-            force_center=False,
-            force_color=False,
-            pointer_follow=True,
-            **kwargs
+        self,
+        st_input: SquTex | str | int,
+        index=None,
+        force_center=False,
+        force_color=False,
+        pointer_follow=True,  # 新增参数，用于控制指针跟随
+        **kwargs
     ):
-        pass
+        """
+        推入动画
+        :param index: 位置
+        :param st_input: 加入的数据块
+        :param force_center: 强制居中
+        :param force_color: 强制统一颜色
+        :param pointer_follow: 是否跟随指针
+        :return: all_the_animate
+        """
+        cp = self.copy()
+        all_the_animate = []
+
+        st_color = self.get_color()
+
+        if isinstance(st_input, SquTex):
+            st_color = st_input.get_color()
+            st_input = st_input.tex
+
+        st_input = SquTexSlide(f"{st_input}", font=self.font, **self.settings, **kwargs)
+        if force_color:
+            st_input.set_color(st_color)
+
+        if index is None or index == len(self):
+            # 插入到列表末尾
+            st_input.next_to(self, direction=self.arrange_direction, buff=self.buff)
+            self.add(st_input)
+            all_the_animate.append(
+                FadeIn(st_input, shift=np.array((self.distance[1], -self.distance[0], 0))),
+            )
+        else:
+            # 插入到指定位置
+            st_input.move_to(cp[index])
+            for i in range(index, len(self)):
+                all_the_animate.append(self[i].animate.shift(self.distance))
+            all_the_animate.append(
+                FadeIn(st_input, shift=np.array((self.distance[1], -self.distance[0], 0))),
+            )
+            self.insert(index, st_input)
+
+        # 如果指针跟随，更新指针的位置
+        if pointer_follow:
+            if self.point_index >= index:
+                # 如果指针位于插入位置之后，指针需要向后移动
+                self.point_index += 1
+            elif self.point_index == index:
+                # 如果指针刚好在插入位置，将指针保持在插入的新位置
+                pass
+
+            all_the_animate.append(
+                self.pointer.animate.next_to(self[self.point_index], -self.pointer_direction, buff=0)
+            )
+
+        if force_center:
+            all_the_animate.append(self.animate.arrange(direction=self.arrange_direction, buff=self.buff))
+
+        return all_the_animate
+
+
 
