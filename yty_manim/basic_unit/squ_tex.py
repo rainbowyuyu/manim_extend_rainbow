@@ -7,6 +7,7 @@ __all__ = (
     "typedict",
     "SquTex",
     "SquTexSlide",
+    "Stack",
 )
 
 
@@ -522,15 +523,147 @@ class Stack(SquTexSlide):
     - 在滑动数据块的基础上添加数据结构的变换特性，
     - 使用 :method:`swap` 完成两数据块的交换
     - 使用 :method:`reverse` 完成某个数据位置后的翻转
-    - 使用 :method:`add_pointer` 添加特定位置的指针
+    - 使用 :method:`move_pointer` 添加特定位置的指针
 
     Examples
     --------
 
+    - 1. 指针滑动`move_pointer`，直接使用play函数，返回一个静态的self
+    >>> class StackClass(Scene):
+    >>>     def construct(self):
+    >>>         lst = [1,2,3,4]
+    >>>         s = Stack(lst,pointer_direction=UP,need_pointer=True,**typedict["default_st_type"])
+    >>>         for i in range(len(lst)):
+    >>>             s[i].set_color(gradient_dict['rainbow_color'][i%7])
+    >>>         self.play(Create(s))
+    >>>         for i in range(len(lst)):
+    >>>             self.play(s.animate.move_pointer(i))
+    >>>         self.wait(2)
+
+    - 2. 元素交换`swap`，使用play时里面是一个动画组的序列解包，示例结合了pop函数
+    >>> class StackClass(Scene):
+    >>>     def construct(self):
+    >>>         lst = [1,2,3,4]
+    >>>         s = Stack(lst,pointer_direction=UP,need_pointer=True,**typedict["default_st_type"])
+    >>>         for i in range(len(lst)):
+    >>>             s[i].set_color(gradient_dict['rainbow_color'][i%7])
+    >>>         self.play(Create(s))
+    >>>         self.play(*s.swap(0,2,pointer_follow=True))
+    >>>         self.play(*s.pop(2))
+    >>>         self.wait(2)
+
+
     """
+
     def __init__(
             self,
             tex: str | list,
+            need_pointer=False,
+            pointer_type_cfg=typedict["default_pointer_type"],
+            pointer_direction=DOWN,
             **kwargs,
     ):
         super().__init__(tex, **kwargs)
+        self.need_pointer = need_pointer
+        self.pointer_type_cfg = pointer_type_cfg
+        self.pointer_direction = pointer_direction
+        if "side_length" in pointer_type_cfg:
+            self.pointer_scale = pointer_type_cfg["side_length"] / 4
+        else:
+            self.pointer_scale = 0.5
+
+        # 指针位置记录
+        self.point_index = 0
+
+        if need_pointer:
+            self.pointer = Triangle(**self.pointer_type_cfg).scale(0.25)
+            self.add(self.pointer)
+            angle = angle_between_vectors(UP, self.pointer_direction)
+            self.pointer.rotate(angle)
+            self.pointer.next_to(self[0], -self.pointer_direction, buff=0)
+
+    def move_pointer(
+            self,
+            index,
+    ):
+        """
+        移动指针标志
+        :param index: 指针位置
+        :return: self
+        """
+        self.point_index = index
+        self.pointer.next_to(self[index], -self.pointer_direction, buff=0)
+        return self
+
+    def _swap_index(
+            self,
+            index1,
+            index2
+    ):
+        """
+        内部交换逻辑
+        :param index1: 元素1
+        :param index2: 元素2
+        :return:
+        """
+        temp = self[index1]
+        self[index1] = self[index2]
+        self[index2] = temp
+        return self
+
+    def swap(
+            self,
+            index1,
+            index2,
+            pointer_follow=True,
+    ):
+        """
+        元素交换
+        :param index1: 元素1
+        :param index2: 元素2
+        :param pointer_follow: 指针跟随
+        :return: all_the_animate
+        """
+        self._swap_index(index1, index2)
+        all_the_animate = []
+        e1_pos = self[index1].get_center()
+        e2_pos = self[index2].get_center()
+        all_the_animate.append(self[index1].animate.move_to(e2_pos))
+        all_the_animate.append(self[index2].animate.move_to(e1_pos))
+        if pointer_follow:
+            # 更新指针位置
+            if self.point_index == index1 or self.point_index == index2:
+                all_the_animate.append(
+                    self.pointer.animate.next_to(self[self.point_index], -self.pointer_direction, buff=0))
+        return all_the_animate
+
+    def reverse(
+            self,
+            pointer_follow=True,
+    ):
+        """
+        翻转
+        :param pointer_follow: 指针跟随
+        :return: all_the_animate
+        """
+        pass
+
+    def pop(
+            self,
+            index: int = -1,
+            force_center=False,
+            pointer_follow=True,
+    ):
+        pass
+
+    def push(
+            self,
+            st_input: SquTex | str | int,
+            index=None,
+            force_center=False,
+            force_color=False,
+            pointer_follow=True,
+            **kwargs
+    ):
+        pass
+

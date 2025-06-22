@@ -44,6 +44,21 @@ typedict = {
         "color": BLUE
     },
 
+    "default_st_type": {
+        "side_length": 1,
+        "fill_color": BLUE,
+        "fill_opacity": 0.5,
+        "stroke_opacity": 0.8,
+        "color": BLUE
+    },
+
+    "default_pointer_type":{
+        "fill_color": YELLOW,
+        "fill_opacity": 0.5,
+        "stroke_opacity": 0.8,
+        "color": YELLOW
+    },
+
     "red_type": {
         "side_length": 1,
         "fill_color": RED,
