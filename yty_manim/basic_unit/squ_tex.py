@@ -551,8 +551,6 @@ class Stack(SquTexSlide):
     >>>         self.play(*s.pop(-2))
     >>>         self.wait(2)
 
-
-
     """
     def __init__(
             self,
