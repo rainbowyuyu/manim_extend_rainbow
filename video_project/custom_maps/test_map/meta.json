@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "map_name": "test_map",
+  "grid_w": 128,
+  "grid_h": 96,
+  "coord_system": "norm_bottom_left",
+  "cell_meters": 0.625,
+  "wave_speed_m_s": 27.5,
+  "explosion_sources": [
+    {
+      "id": "bomb_1",
+      "norm": [
+        0.5,
+        0.5
+      ],
+      "label": "C4",
+      "color": "#ff6600"
+    }
+  ],
+  "markers": [],
+  "exported_at": "2026-07-12T03:41:29.352653+00:00"
+}

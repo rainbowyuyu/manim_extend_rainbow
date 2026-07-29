@@ -1,0 +1,58 @@
+{
+  "source": "D:\\stream\\steamapps\\common\\Counter-Strike Global Offensive\\game\\csgo\\maps",
+  "maps_scanned": 16,
+  "maps_with_baked_bomb_damage": [
+    "de_ancient",
+    "de_ancient_night",
+    "de_anubis",
+    "de_cache",
+    "de_dust2",
+    "de_inferno",
+    "de_mirage",
+    "de_nuke",
+    "de_overpass",
+    "de_train",
+    "de_vertigo"
+  ],
+  "mirage_detail": {
+    "map": "de_mirage",
+    "size_mb": 170.68,
+    "has_baked_bomb_damage": true,
+    "related_strings": [
+      "_damage_power",
+      "baked_bomb_damage",
+      "bombsite",
+      "bombsite_a.vmaj",
+      "bombsite_b.vmaj",
+      "bombsite_left_arrow.vmatr",
+      "bombsite_letter_a.vmatp",
+      "bombsite_letter_b.vmatp",
+      "bombsite_line_spray.vmatr",
+      "bombsiteb",
+      "content/csgo/maps/de_mirage/baked_bomb_damage.vdata",
+      "maps/de_mirage/baked_bomb_damage.vdata",
+      "materials/decals/bombsite_a.vmat",
+      "materials/decals/bombsite_b.vmat",
+      "materials/decals/bombsite_left_arrow.vmat",
+      "materials/decals/bombsite_letter_a.vmat",
+      "materials/decals/bombsite_letter_b.vmat",
+      "materials/decals/bombsite_line_spray.vmat",
+      "materials/decals/bombsite_right_arrow.vmat"
+    ],
+    "vpk_entries": []
+  },
+  "skinsniper_crosscheck": {
+    "url": "https://skinsniper.com/tools/bomb-damage-radius",
+    "mirage_site_a_notes": [
+      "Blast field comes from map shipped data (same as cl_bake_bomb_damage_debug)",
+      "~33 HP at 20% intensity, ~77 HP at 40% intensity (approximate)",
+      "Lethal zone: wave travel 33-77m depending on site, then fades over ~32m",
+      "Armor does not reduce bomb damage"
+    ]
+  },
+  "compile_pipeline": {
+    "file": "game/csgo_core/gameinfo.gi",
+    "step": "cs2_bomb_damage",
+    "location": "GameSpecificPostMapBuildSteps"
+  }
+}

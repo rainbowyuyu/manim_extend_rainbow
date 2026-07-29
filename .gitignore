@@ -1,0 +1,5 @@
+*.pyc
+*.mp4
+*.mov
+/media
+/.idea

@@ -1,0 +1,19 @@
+{
+  "source": "maps/de_mirage/baked_bomb_damage.vdata_c",
+  "vpk_path": "D:\\stream\\steamapps\\common\\Counter-Strike Global Offensive\\game\\csgo\\maps\\de_mirage.vpk",
+  "data_block_bytes": 711034,
+  "string_count": 8,
+  "strings_sample": [
+    "generic_data_type",
+    "CS2_BOMB_DAMAGE_DATA",
+    "header",
+    "version",
+    "data",
+    "bombsites",
+    "positions",
+    "damage_values"
+  ],
+  "buf1_len": 100,
+  "buf2_len": 68,
+  "blobs_len": 954534
+}

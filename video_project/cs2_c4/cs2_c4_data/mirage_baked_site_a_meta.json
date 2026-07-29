@@ -1,0 +1,36 @@
+{
+  "cell_count": 68177,
+  "world_bounds": {
+    "xmin": -2655.0,
+    "xmax": 1455.0,
+    "ymin": -2605.0,
+    "ymax": 895.0
+  },
+  "damage_byte_offset": 4,
+  "damage_min": 0,
+  "damage_max": 255,
+  "grid_w": 128,
+  "grid_h": 96,
+  "site": "A",
+  "source": "maps/de_mirage/baked_bomb_damage.vdata_c",
+  "vpk_path": "D:\\stream\\steamapps\\common\\Counter-Strike Global Offensive\\game\\csgo\\maps\\de_mirage.vpk",
+  "bombsites_bytes": 56,
+  "positions_bytes": 409062,
+  "damage_values_bytes": 545416,
+  "bombsites_floats": [
+    -616.0,
+    -2328.0,
+    -180.0,
+    -264.0,
+    -1972.0,
+    -156.0,
+    1795.0,
+    -2216.0,
+    72.0,
+    -159.0,
+    -1880.0,
+    440.0,
+    -143.0,
+    2228.0
+  ]
+}

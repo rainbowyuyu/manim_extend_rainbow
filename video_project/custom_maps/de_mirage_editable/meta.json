@@ -1,0 +1,78 @@
+{
+  "version": 1,
+  "map_name": "de_mirage_editable",
+  "grid_w": 128,
+  "grid_h": 96,
+  "coord_system": "norm_bottom_left",
+  "cell_meters": 0.625,
+  "wave_speed_m_s": 27.5,
+  "explosion_sources": [
+    {
+      "id": "bomb_a",
+      "norm": [
+        0.30708661417322836,
+        0.5894736842105263
+      ],
+      "label": "C4",
+      "color": "#ff6600"
+    }
+  ],
+  "markers": [
+    {
+      "id": "B",
+      "norm": [
+        0.33858267716535434,
+        0.6210526315789474
+      ],
+      "label": "B 包点",
+      "kind": "text",
+      "color": "#cc5555",
+      "icon": ""
+    },
+    {
+      "id": "connector",
+      "norm": [
+        0.48031496062992124,
+        0.5789473684210527
+      ],
+      "label": "链接",
+      "kind": "text",
+      "color": "#66ccff",
+      "icon": ""
+    },
+    {
+      "id": "jungle",
+      "norm": [
+        0.3543307086614173,
+        0.7157894736842105
+      ],
+      "label": "Jungle",
+      "kind": "text",
+      "color": "#66ff99",
+      "icon": ""
+    },
+    {
+      "id": "ct",
+      "norm": [
+        0.4251968503937008,
+        0.5789473684210527
+      ],
+      "label": "CT 家",
+      "kind": "text",
+      "color": "#6699ff",
+      "icon": ""
+    },
+    {
+      "id": "t",
+      "norm": [
+        0.3543307086614173,
+        0.49473684210526314
+      ],
+      "label": "T 家",
+      "kind": "text",
+      "color": "#ffcc44",
+      "icon": ""
+    }
+  ],
+  "exported_at": "2026-07-12T04:09:08.825126+00:00"
+}

@@ -1,6 +1,6 @@
 # rainbow_yu manim_extend.basic_unit 🐋✨
 
-__version__ = '0.6.1'
+__version__ = '0.7.1'
 
 __all__ = (
     "dec_bin",
@@ -8,7 +8,10 @@ __all__ = (
     "threed_vgp",
     "screen_cycle",
     "code_step",
-    "shapes"
+    "shapes",
+    "cs2_arena",
+    "cs2_damage",
+    "cs2_map",
 )
 
 from .dec_bin import *
@@ -17,3 +20,7 @@ from .threed_vgp import *
 from .screen_cycle import *
 from .code_step import *
 from .shapes import *
+
+from . import cs2_arena
+from . import cs2_damage
+from . import cs2_map
