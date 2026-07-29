@@ -2,4 +2,5 @@
 *.mp4
 *.mov
 /media
+/media_speed_rate
 /.idea

@@ -116,6 +116,181 @@ typedict = {
 }
 
 
+# ── CS2 / 冲击波 / 预烘焙相关默认颜色与布局参数 ───────────────
+
+def safe_ui_font() -> str:
+    """优先选用系统可用的中文 UI 字体。"""
+    try:
+        from manim.utils.fonts import get_available_fonts
+
+        available = set(get_available_fonts())
+        for name in ("Microsoft YaHei", "SimHei", "Noto Sans CJK SC", *text_font, "Sans"):
+            if name in available:
+                return name
+    except Exception:
+        pass
+    return "Sans"
+
+
+UI_FONT = safe_ui_font()
+CODE_FONT = "Consolas"
+
+# ── 三维竞技场 Arena3D ───────────────────────────────────────
+cs2_arena_3d = dict(
+    BG="#07070c",
+    FLOOR="#243044",
+    FLOOR_SIDE="#1c2636",
+    FLOOR_EDGE="#3a4860",
+    WALL="#5a6578",
+    WALL_SIDE="#4a5568",
+    WALL_TOP="#8b97ab",
+    ACCENT_OLD="#ff4d4d",
+    ACCENT_OLD_GLOW="#ff8080",
+    ACCENT_NEW="#3de0c8",
+    ACCENT_NEW_HOT="#ff5c4d",
+    ACCENT_NEW_MID="#f0a040",
+    BOMB_GLOW="#ff3366",
+    SAFE="#5eead4",
+    TITLE_C="#f0f4ff",
+    CELL=0.58,
+    WALL_H=1.05,
+    FLOOR_H=0.14,
+    TILE_SCALE=0.94,
+    WALL_SCALE=0.98,
+)
+
+# ── 二维寻路 GridMap2D ───────────────────────────────────────
+cs2_pathfinding = dict(
+    C_BG="#06080f",
+    C_FLOOR="#1c2838",
+    C_WALL="#2a3548",
+    C_WALL_EDGE="#3d4d66",
+    C_START="#ff4d6d",
+    C_GOAL="#5eead4",
+    C_PATH="#fff7ed",
+    C_PANEL="#0e1420",
+    C_PANEL_EDGE="#2a3a55",
+    C_TITLE="#eef2ff",
+    C_SUB="#94a3b8",
+    C_VIS_COOL="#3de0c8",
+    C_VIS_MID="#f0c040",
+    C_VIS_HOT="#ff6b4a",
+    C_EUCL="#ff5c7a",
+    CELL_2D=0.52,
+    CELL_GAP=0.06,
+    MAP_SCALE=0.90,
+    PANEL_BUFF=0.55,
+    Z_MAP=0,
+    Z_PANEL=2,
+    Z_METRICS=7,
+    Z_PATH=8,
+    Z_MARKERS=10,
+    # MAP_SHIFT 含 LEFT/UP，在模块内用向量装配
+    MAP_SHIFT_LEFT=2.75,
+    MAP_SHIFT_UP=0.05,
+)
+
+# ── 预烘焙伤害教学 ───────────────────────────────────────────
+cs2_damage = dict(
+    C_BG="#0a0c12",
+    C_TITLE="#f1f5ff",
+    C_SUB="#a8b4c8",
+    C_MUTED="#6b778c",
+    C_PANEL="#101621",
+    C_PANEL_EDGE="#2a3548",
+    C_MAP="#1a2230",
+    C_WALL="#5a6578",
+    C_WOOD="#a67c52",
+    C_BRICK="#6d5a4e",
+    C_BLAST="#ff6b3d",
+    C_BLAST_GLOW="#feac5e",
+    C_HEAT_HI="#ffe566",
+    C_HEAT_MID="#ff5a3c",
+    C_HEAT_LO="#7a1f1f",
+    C_HP="#3dd68c",
+    C_HP_PREVIEW="#ff4d5a",
+    C_PLAYER_A="#4bc0c8",
+    C_PLAYER_B="#a78bfa",
+    C_PLAYER_C="#fbbf24",
+    C_ACCENT="#3de0c8",
+    C_WARN="#f59e0b",
+    MAP_W=8.6,
+    MAP_H=5.0,
+    MAP_ORIGIN=(-4.3, -1.6, 0.0),
+    GRID_NX=16,
+    GRID_NY=10,
+    D_MAX=500.0,
+    RADIUS=4.2,
+    HP_MAX=100.0,
+    HP_START=84.0,
+    MAT_OPEN=1.00,
+    MAT_WOOD=0.45,
+    MAT_BRICK=0.15,
+    MAT_CONCRETE=0.00,
+)
+
+# ── 三维伤害丘 ───────────────────────────────────────────────
+cs2_damage_hill = dict(
+    C_BG="#07090f",
+    C_DOT="#ffffff",
+    C_TRAIL="#ffffff",
+    C_CORE="#ff2d55",
+    C_LETHAL="#ef4444",
+    X_MIN=-4.4,
+    X_MAX=4.4,
+    Y_MIN=-3.6,
+    Y_MAX=3.6,
+    R_LETHAL=1.05,
+    R_BLAST=4.2,
+    Z_SCALE=2.7,
+    # (t, hex) 峰顶红 → 山脚深蓝
+    HEIGHT_STOPS=(
+        (0.00, "#1e3a8a"),
+        (0.18, "#0ea5e9"),
+        (0.36, "#14b8a6"),
+        (0.52, "#22c55e"),
+        (0.68, "#eab308"),
+        (0.82, "#f97316"),
+        (1.00, "#ef4444"),
+    ),
+)
+
+# ── 地图冲击波热力（Mirage / MapBundle 共用波色）────────────
+cs2_map_heat = dict(
+    C_WAVE_HOT="#ff6b35",
+    C_WAVE_MID="#f7c548",
+    C_WAVE_COOL="#4ecdc4",
+    C_WALK="#1a2332",
+    C_FLOOR_EDGE="#4a4a55",
+    C_GLOW="#ff3366",
+    MAP_W=12.0,
+    MAP_H=9.0,
+    CELL_GAP=0.04,
+)
+
+cs2_mirage_map = dict(
+    **cs2_map_heat,
+    C_BG="#060608",
+    WAVE_UPSAMPLE=2,
+    MAX_CONTOUR_PTS=80,
+    RADIUS_QUANT=0.65,
+)
+
+cs2_bundle_map = dict(
+    **cs2_map_heat,
+    C_BG="#121216",
+)
+
+# 物理/数据侧常量（非颜色，但与 CS2 地图默认配置同源）
+cs2_map_physics = dict(
+    CELL_METERS=0.625,
+    WAVE_SPEED_M_S=27.5,
+    GRID_W=128,
+    GRID_H=96,
+    RADAR_SIZE=1024,
+)
+
+
 """
                           __                                                    
                __        /\ \                                                   

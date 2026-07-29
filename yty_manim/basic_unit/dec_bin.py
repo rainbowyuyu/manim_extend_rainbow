@@ -1,7 +1,13 @@
 # rainbow_yu manim_extend.basic_unit.dec_bin 🐋✨
 # 二进制基本的类
 
+from yty_manim.disposition.fonts_and_colors import *
 from yty_manim.basic_unit.squ_tex import *
+
+__all__ = (
+    "BinNumber",
+    "Bin4SquTex",
+)
 
 
 class BinNumber:
@@ -172,7 +178,8 @@ class BinNumber:
         """更新二进制数"""
         self._sign = self._set_sign()
         self._split = self._set_split()
-        self._binary_int = self._set_precision() + self._set_binary_int()
+        # 整数位补齐只在 _set_binary_int 中完成，避免与 _set_precision 重复补零
+        self._binary_int = self._set_binary_int()
         self._binary_float = self._set_binary_float()
         self.bin_num = self._sign + self._split + self._binary_int + self._binary_float
 
@@ -257,30 +264,298 @@ class BinNumber:
         raise TypeError(f"Unsupported operand type(s) for /: 'BinNumber' and '{type(other).__name__}'")
 
 
-class Bin4SquTex(BinNumber):
+class Bin4SquTex(SquTex, BinNumber):
     """
-    二进制的manim接口
-    继承于 :class:`~.BinNumber`，
+    二进制的 manim 接口，
+    继承于 :class:`~.SquTex` 与 :class:`~.BinNumber` ，
 
     Notes
     -----
 
-    - 常用于数据结构的演示和二进制转换的演示，
-    -  :method:``
+    - 常用于数据结构与二进制转换的演示，
+    - 以 :class:`~.BinNumber` 计算 ``bin_num``，再用 :class:`~.SquTex` 逐位成块显示，
+    - 构造时把方块样式 kwargs 赋给 :class:`~.Square`（与 :class:`~.SquTex` 相同），
+    - 使用 :method:`color_logic` 按符号位 / 分隔符 / 整数位 / 小数点 / 小数位上色，
+    - 使用 :method:`update_binary` 在改十进制参数后同步刷新画面，
+    - 使用 :method:`show_encoding` 切换原码 / 反码 / 补码显示，
+    - 使用 :method:`highlight_bits` 高亮指定下标的位，
+    - 单个动画可沿用 :method:`animate_one_by_one`、:method:`change_square`、:method:`change_text`。
 
     Examples
     --------
-"""
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        pass
 
-    def color_logic(self):
-        pass
+    创建并按逻辑上色:
+
+    >>> class Bin4SquTexCreate(Scene):
+    >>>     def construct(self):
+    >>>         b = Bin4SquTex(-5, 8, 1, True, **typedict["default_type"])
+    >>>         self.play(b.animate_one_by_one(FadeIn, scale=1.5))
+    >>>         self.wait()
+
+    更新数值并切换补码:
+
+    >>> class Bin4SquTexEncoding(Scene):
+    >>>     def construct(self):
+    >>>         b = Bin4SquTex(-5, 8, 1, True, **typedict["default_type"])
+    >>>         self.add(b)
+    >>>         self.wait()
+    >>>         self.play(FadeTransform(b.copy(), b.show_encoding("two")))
+    >>>         self.wait()
+    >>>         self.play(FadeTransform(b.copy(), b.show_encoding("original")))
+    >>>         self.wait()
+
+    高亮符号位:
+
+    >>> class Bin4SquTexHighlight(Scene):
+    >>>     def construct(self):
+    >>>         b = Bin4SquTex(13, 8, 1, True, **typedict["default_type"])
+    >>>         self.add(b)
+    >>>         self.play(*[Indicate(b[i]) for i in b.sign_indices()])
+    >>>         self.wait()
+
+    """
+
+    __version__: str = "1.0.0"
+
+    def __init__(
+            self,
+            dec_num: int | float | str | None = None,
+            precision: int | None = None,
+            symbolic_bit: int = 1,
+            is_split: bool = False,
+            font="",
+            buff=0,
+            arrange_direction=RIGHT,
+            text_type=Text,
+            str_need_split=True,
+            apply_color_logic=True,
+            **kwargs,
+    ):
+        self._squ_ready = False
+        self.apply_color_logic_flag = apply_color_logic
+
+        if dec_num is None:
+            self.dec_num = 0
+        else:
+            self.dec_num = dec_num
+        self.precision = precision
+        self.symbolic_bit = symbolic_bit
+        self.is_split = is_split
+        BinNumber.update_binary(self)
+
+        SquTex.__init__(
+            self,
+            tex=self.bin_num,
+            font=font,
+            buff=buff,
+            arrange_direction=arrange_direction,
+            text_type=text_type,
+            str_need_split=str_need_split,
+            **kwargs,
+        )
+        self._squ_ready = True
+        if self.apply_color_logic_flag:
+            self.color_logic()
+
+    def _spawn_same_style(self, dec_num: int | float) -> "Bin4SquTex":
+        """用当前样式生成新的 :class:`Bin4SquTex`。"""
+        return Bin4SquTex(
+            dec_num,
+            self.precision,
+            self.symbolic_bit,
+            self.is_split,
+            font=self.font,
+            buff=self.buff,
+            arrange_direction=self.arrange_direction,
+            text_type=self.text_type,
+            str_need_split=self.str_need_split,
+            apply_color_logic=self.apply_color_logic_flag,
+            **self.kwargs,
+        )
+
+    def _part_spans(self) -> dict[str, range]:
+        """各逻辑段在 ``bin_num`` / SquTex 下标中的区间。"""
+        i = 0
+        spans: dict[str, range] = {}
+        spans["sign"] = range(i, i + len(self._sign))
+        i += len(self._sign)
+        spans["split"] = range(i, i + len(self._split))
+        i += len(self._split)
+        spans["int"] = range(i, i + len(self._binary_int))
+        i += len(self._binary_int)
+        float_bits = self._binary_float
+        if float_bits.startswith("."):
+            spans["point"] = range(i, i + 1)
+            spans["float"] = range(i + 1, i + len(float_bits))
+        else:
+            spans["point"] = range(i, i)
+            spans["float"] = range(i, i + len(float_bits))
+        return spans
+
+    def sign_indices(self) -> list[int]:
+        return list(self._part_spans()["sign"])
+
+    def split_indices(self) -> list[int]:
+        return list(self._part_spans()["split"])
+
+    def int_indices(self) -> list[int]:
+        return list(self._part_spans()["int"])
+
+    def point_indices(self) -> list[int]:
+        return list(self._part_spans()["point"])
+
+    def float_indices(self) -> list[int]:
+        return list(self._part_spans()["float"])
+
+    def color_logic(
+            self,
+            sign_color=RED,
+            int_color=BLUE,
+            float_color=GREEN,
+            point_color=YELLOW,
+            split_color=GREY,
+            fill_opacity=None,
+            **kwargs,
+    ):
+        """
+        按符号位 / 分隔符 / 整数位 / 小数点 / 小数位上色。
+        :return: self
+        """
+        spans = self._part_spans()
+        style = dict(kwargs)
+        if fill_opacity is not None:
+            style["fill_opacity"] = fill_opacity
+
+        def _paint(indices, color):
+            for idx in indices:
+                if idx >= len(self):
+                    continue
+                squ_kw = {"color": color, **style}
+                self.change_square(idx, **squ_kw)
+                self.change_text(idx, color=color)
+
+        _paint(spans["sign"], sign_color)
+        _paint(spans["split"], split_color)
+        _paint(spans["int"], int_color)
+        _paint(spans["point"], point_color)
+        _paint(spans["float"], float_color)
+        return self
+
+    def _rebuild_squ(self):
+        """按当前 ``bin_num`` 重建方块序列。"""
+        self.remove(*list(self.submobjects))
+        self.tex = self.bin_num
+        if self.str_need_split:
+            try:
+                self._default_type()
+            except IndexError:
+                self._without_split_type()
+        else:
+            self._without_split_type()
+        self._construct()
+        if self.apply_color_logic_flag:
+            self.color_logic()
+        return self
+
+    def _sync_text_only(self, text: str):
+        """长度不变时只改每位文字；长度变化则整块重建。"""
+        if len(text) != len(self):
+            self.bin_num = text
+            return self._rebuild_squ()
+        for i, ch in enumerate(text):
+            self.change_word_in_text(i, ch)
+        self.tex = text
+        self.bin_num = text
+        if self.apply_color_logic_flag:
+            self.color_logic()
+        return self
+
+    def update_binary(self):
+        """更新二进制数，并在已构造画面时同步 SquTex。"""
+        BinNumber.update_binary(self)
+        if self._squ_ready:
+            self._rebuild_squ()
+        return self
+
+    def standardize(self):
+        """将输入的二进制数标准化，并刷新画面。"""
+        BinNumber.standardize(self)
+        if self._squ_ready:
+            self._rebuild_squ()
+        return self
+
+    def show_encoding(self, kind: str = "original"):
+        """
+        切换显示编码。
+        :param kind: ``original`` 原码 / ``one`` 反码 / ``two`` 补码
+        :return: self
+        """
+        if kind in ("original", "ori", "raw"):
+            BinNumber.update_binary(self)
+            text = self.bin_num
+        elif kind in ("one", "ones", "ex_one"):
+            text = self.ex_one()
+        elif kind in ("two", "twos", "ex_two"):
+            text = self.ex_two()
+        else:
+            raise ValueError("kind 须为 original / one / two")
+        return self._sync_text_only(text)
+
+    def highlight_bits(
+            self,
+            *indices: int,
+            color=GOLD,
+            **kwargs,
+    ):
+        """
+        高亮指定下标的位（方块 + 文字）。
+        :return: self
+        """
+        for i in indices:
+            self.change_square(i, color=color, **kwargs)
+            self.change_text(i, color=color)
+        return self
+
+    def __add__(self, other):
+        if isinstance(other, BinNumber):
+            return self._spawn_same_style(self.dec_num + other.dec_num)
+        raise TypeError(
+            "Unsupported operand type(s) for +: 'Bin4SquTex' and '{}'".format(type(other).__name__)
+        )
+
+    def __sub__(self, other):
+        if isinstance(other, BinNumber):
+            return self._spawn_same_style(self.dec_num - other.dec_num)
+        raise TypeError(
+            f"Unsupported operand type(s) for -: 'Bin4SquTex' and '{type(other).__name__}'"
+        )
+
+    def __mul__(self, other):
+        if isinstance(other, BinNumber):
+            return self._spawn_same_style(self.dec_num * other.dec_num)
+        raise TypeError(
+            f"Unsupported operand type(s) for *: 'Bin4SquTex' and '{type(other).__name__}'"
+        )
+
+    def __truediv__(self, other):
+        if isinstance(other, BinNumber):
+            if other.dec_num == 0:
+                raise ZeroDivisionError("division by zero")
+            return self._spawn_same_style(self.dec_num / other.dec_num)
+        raise TypeError(
+            f"Unsupported operand type(s) for /: 'Bin4SquTex' and '{type(other).__name__}'"
+        )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     bin1 = BinNumber(-1, 8, 2, True)
     bin2 = BinNumber(16, 5, 1, True)
     bin3 = bin1 + bin2
     print(bin3)
+
+    b4 = Bin4SquTex(-5, 8, 1, True)
+    print(b4.bin_num, len(b4), b4.sign_indices(), b4.int_indices())
+    b4.show_encoding("two")
+    print("two:", b4.bin_num)
+    b4.show_encoding("original")
+    print("ori:", b4.bin_num)

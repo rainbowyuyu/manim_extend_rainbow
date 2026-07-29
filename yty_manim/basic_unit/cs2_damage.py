@@ -8,7 +8,13 @@ from dataclasses import dataclass
 import numpy as np
 from manim import *
 
-from yty_manim.disposition.fonts_and_colors import text_font
+from yty_manim.disposition.fonts_and_colors import (
+    CODE_FONT,
+    UI_FONT,
+    cs2_damage,
+    cs2_damage_hill,
+    cs2_map_heat,
+)
 
 __all__ = (
     "intensity_color",
@@ -42,10 +48,10 @@ __all__ = (
 def intensity_color(
     t: float,
     *,
-    cool: str = "#4ecdc4",
-    mid: str = "#f7c548",
-    hot: str = "#ff6b35",
-    zero: str | None = "#1a2332",
+    cool: str = cs2_map_heat["C_WAVE_COOL"],
+    mid: str = cs2_map_heat["C_WAVE_MID"],
+    hot: str = cs2_map_heat["C_WAVE_HOT"],
+    zero: str | None = cs2_map_heat["C_WALK"],
 ) -> str:
     """t∈[0,1] → hex；t<=0 时返回 zero（若给定）。"""
     t = float(t)
@@ -65,59 +71,41 @@ def intensity_color(
 
 
 
-# ── 视觉常量 ──────────────────────────────────────────────────────────
-C_BG = "#0a0c12"
-C_TITLE = "#f1f5ff"
-C_SUB = "#a8b4c8"
-C_MUTED = "#6b778c"
-C_PANEL = "#101621"
-C_PANEL_EDGE = "#2a3548"
-C_MAP = "#1a2230"
-C_WALL = "#5a6578"
-C_WOOD = "#a67c52"
-C_BLAST = "#ff6b3d"
-C_BLAST_GLOW = "#feac5e"
-C_HEAT_HI = "#ffe566"
-C_HEAT_MID = "#ff5a3c"
-C_HEAT_LO = "#7a1f1f"
-C_HP = "#3dd68c"
-C_HP_PREVIEW = "#ff4d5a"
-C_PLAYER_A = "#4bc0c8"
-C_PLAYER_B = "#a78bfa"
-C_PLAYER_C = "#fbbf24"
-C_ACCENT = "#3de0c8"
-C_WARN = "#f59e0b"
+# ── 视觉 / 教学默认值（见 disposition.fonts_and_colors）────────────────
+C_BG = cs2_damage["C_BG"]
+C_TITLE = cs2_damage["C_TITLE"]
+C_SUB = cs2_damage["C_SUB"]
+C_MUTED = cs2_damage["C_MUTED"]
+C_PANEL = cs2_damage["C_PANEL"]
+C_PANEL_EDGE = cs2_damage["C_PANEL_EDGE"]
+C_MAP = cs2_damage["C_MAP"]
+C_WALL = cs2_damage["C_WALL"]
+C_WOOD = cs2_damage["C_WOOD"]
+C_BLAST = cs2_damage["C_BLAST"]
+C_BLAST_GLOW = cs2_damage["C_BLAST_GLOW"]
+C_HEAT_HI = cs2_damage["C_HEAT_HI"]
+C_HEAT_MID = cs2_damage["C_HEAT_MID"]
+C_HEAT_LO = cs2_damage["C_HEAT_LO"]
+C_HP = cs2_damage["C_HP"]
+C_HP_PREVIEW = cs2_damage["C_HP_PREVIEW"]
+C_PLAYER_A = cs2_damage["C_PLAYER_A"]
+C_PLAYER_B = cs2_damage["C_PLAYER_B"]
+C_PLAYER_C = cs2_damage["C_PLAYER_C"]
+C_ACCENT = cs2_damage["C_ACCENT"]
+C_WARN = cs2_damage["C_WARN"]
 
-# ── 教学参数（集中配置）──────────────────────────────────────────────
-MAP_W, MAP_H = 8.6, 5.0
-MAP_ORIGIN = np.array([-4.3, -1.6, 0.0])
-GRID_NX, GRID_NY = 16, 10
-D_MAX = 500.0
-RADIUS = 4.2
-HP_MAX = 100.0
-HP_START = 84.0
+MAP_W, MAP_H = cs2_damage["MAP_W"], cs2_damage["MAP_H"]
+MAP_ORIGIN = np.array(cs2_damage["MAP_ORIGIN"])
+GRID_NX, GRID_NY = cs2_damage["GRID_NX"], cs2_damage["GRID_NY"]
+D_MAX = cs2_damage["D_MAX"]
+RADIUS = cs2_damage["RADIUS"]
+HP_MAX = cs2_damage["HP_MAX"]
+HP_START = cs2_damage["HP_START"]
 
-MAT_OPEN = 1.00
-MAT_WOOD = 0.45
-MAT_BRICK = 0.15
-MAT_CONCRETE = 0.00
-
-
-def _safe_ui_font() -> str:
-    try:
-        from manim.utils.fonts import get_available_fonts
-
-        available = set(get_available_fonts())
-        for name in ("Microsoft YaHei", "SimHei", "Noto Sans CJK SC", *text_font, "Sans"):
-            if name in available:
-                return name
-    except Exception:
-        pass
-    return "Sans"
-
-
-UI_FONT = _safe_ui_font()
-CODE_FONT = "Consolas"
+MAT_OPEN = cs2_damage["MAT_OPEN"]
+MAT_WOOD = cs2_damage["MAT_WOOD"]
+MAT_BRICK = cs2_damage["MAT_BRICK"]
+MAT_CONCRETE = cs2_damage["MAT_CONCRETE"]
 
 
 def fm(tex_or_ascii: str, font_size: int = 24, color: str = C_TITLE) -> Text:
@@ -355,7 +343,7 @@ def make_demo_walls() -> list[WallSpec]:
         WallSpec(-1.1, -0.4, -0.75, 2.1, MAT_CONCRETE, "混凝土", C_WALL),
         WallSpec(0.9, -1.2, 1.25, 1.4, MAT_CONCRETE, "混凝土", C_WALL),
         WallSpec(-0.2, 0.55, 0.85, 0.85, MAT_WOOD, "薄木板", C_WOOD),
-        WallSpec(2.0, 0.2, 3.2, 0.55, MAT_BRICK, "砖墙", "#6d5a4e"),
+        WallSpec(2.0, 0.2, 3.2, 0.55, MAT_BRICK, "砖墙", cs2_damage["C_BRICK"]),
     ]
 
 
@@ -589,27 +577,18 @@ ExplosionSource = ExplosionMarker
 
 # ── 三维伤害丘 ──────────────────────────────────────────────
 
-
-
-C_BG = "#07090f"
-C_DOT = "#ffffff"
-C_TRAIL = "#ffffff"
-C_CORE = "#ff2d55"
-C_LETHAL = "#ef4444"
+# 覆盖预烘焙 C_BG：伤害丘场景使用独立背景色
+C_BG = cs2_damage_hill["C_BG"]
+C_DOT = cs2_damage_hill["C_DOT"]
+C_TRAIL = cs2_damage_hill["C_TRAIL"]
+C_CORE = cs2_damage_hill["C_CORE"]
+C_LETHAL = cs2_damage_hill["C_LETHAL"]
 
 # 峰顶红 → 山腰黄绿 → 山脚青绿蓝
 def _height_to_color(t: float) -> ManimColor:
     """t∈[0,1]：0=边沿绿蓝，1=峰顶红。"""
     t = float(np.clip(t, 0.0, 1.0))
-    stops = [
-        (0.00, ManimColor("#1e3a8a")),  # 深蓝
-        (0.18, ManimColor("#0ea5e9")),  # 青蓝
-        (0.36, ManimColor("#14b8a6")),  # 青绿
-        (0.52, ManimColor("#22c55e")),  # 绿
-        (0.68, ManimColor("#eab308")),  # 黄
-        (0.82, ManimColor("#f97316")),  # 橙
-        (1.00, ManimColor("#ef4444")),  # 红
-    ]
+    stops = [(u, ManimColor(c)) for u, c in cs2_damage_hill["HEIGHT_STOPS"]]
     for i in range(len(stops) - 1):
         t0, c0 = stops[i]
         t1, c1 = stops[i + 1]
@@ -619,11 +598,11 @@ def _height_to_color(t: float) -> ManimColor:
     return stops[-1][1]
 
 
-X_MIN, X_MAX = -4.4, 4.4
-Y_MIN, Y_MAX = -3.6, 3.6
-R_LETHAL = 1.05
-R_BLAST = 4.2
-Z_SCALE = 2.7
+X_MIN, X_MAX = cs2_damage_hill["X_MIN"], cs2_damage_hill["X_MAX"]
+Y_MIN, Y_MAX = cs2_damage_hill["Y_MIN"], cs2_damage_hill["Y_MAX"]
+R_LETHAL = cs2_damage_hill["R_LETHAL"]
+R_BLAST = cs2_damage_hill["R_BLAST"]
+Z_SCALE = cs2_damage_hill["Z_SCALE"]
 
 
 def _smoothstep(edge0: float, edge1: float, x: float) -> float:

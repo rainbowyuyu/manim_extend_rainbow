@@ -10,7 +10,11 @@ import heapq
 import numpy as np
 from manim import *
 
-from yty_manim.disposition.fonts_and_colors import text_font
+from yty_manim.disposition.fonts_and_colors import (
+    UI_FONT,
+    cs2_arena_3d,
+    cs2_pathfinding,
+)
 
 __all__ = (
     "GRID",
@@ -40,37 +44,22 @@ __all__ = (
 
 
 
-def _safe_ui_font() -> str:
-    try:
-        from manim.utils.fonts import get_available_fonts
-
-        available = set(get_available_fonts())
-        for name in ("Microsoft YaHei", "SimHei", "Noto Sans CJK SC", *text_font, "Sans"):
-            if name in available:
-                return name
-    except Exception:
-        pass
-    return "Sans"
-
-
-UI_FONT = _safe_ui_font()
-
-# ── Palette ──────────────────────────────────────────────────────────────────
-BG = "#07070c"
-FLOOR = "#243044"
-FLOOR_SIDE = "#1c2636"
-FLOOR_EDGE = "#3a4860"
-WALL = "#5a6578"
-WALL_SIDE = "#4a5568"
-WALL_TOP = "#8b97ab"
-ACCENT_OLD = "#ff4d4d"
-ACCENT_OLD_GLOW = "#ff8080"
-ACCENT_NEW = "#3de0c8"
-ACCENT_NEW_HOT = "#ff5c4d"
-ACCENT_NEW_MID = "#f0a040"
-BOMB_GLOW = "#ff3366"
-SAFE = "#5eead4"
-TITLE_C = "#f0f4ff"
+# 调色板 / 布局默认值（见 disposition.fonts_and_colors）
+BG = cs2_arena_3d["BG"]
+FLOOR = cs2_arena_3d["FLOOR"]
+FLOOR_SIDE = cs2_arena_3d["FLOOR_SIDE"]
+FLOOR_EDGE = cs2_arena_3d["FLOOR_EDGE"]
+WALL = cs2_arena_3d["WALL"]
+WALL_SIDE = cs2_arena_3d["WALL_SIDE"]
+WALL_TOP = cs2_arena_3d["WALL_TOP"]
+ACCENT_OLD = cs2_arena_3d["ACCENT_OLD"]
+ACCENT_OLD_GLOW = cs2_arena_3d["ACCENT_OLD_GLOW"]
+ACCENT_NEW = cs2_arena_3d["ACCENT_NEW"]
+ACCENT_NEW_HOT = cs2_arena_3d["ACCENT_NEW_HOT"]
+ACCENT_NEW_MID = cs2_arena_3d["ACCENT_NEW_MID"]
+BOMB_GLOW = cs2_arena_3d["BOMB_GLOW"]
+SAFE = cs2_arena_3d["SAFE"]
+TITLE_C = cs2_arena_3d["TITLE_C"]
 
 # ── Example arena ────────────────────────────────────────────────────────────
 # Walkable = 1, wall = 0. Multi-room layout: bomb in west courtyard;
@@ -94,11 +83,11 @@ GRID = np.array(
 )
 BOMB_IJ = (2, 2)        # west courtyard
 SURVIVOR_IJ = (3, 11)   # east pocket behind L-wall (short Euclidean, long path)
-CELL = 0.58
-WALL_H = 1.05
-FLOOR_H = 0.14
-TILE_SCALE = 0.94  # floor plates nearly fill cell; walls are merged separately
-WALL_SCALE = 0.98  # kept for reference; walls use merged rects at 0.98*CELL
+CELL = cs2_arena_3d["CELL"]
+WALL_H = cs2_arena_3d["WALL_H"]
+FLOOR_H = cs2_arena_3d["FLOOR_H"]
+TILE_SCALE = cs2_arena_3d["TILE_SCALE"]
+WALL_SCALE = cs2_arena_3d["WALL_SCALE"]
 
 
 def _cell_to_xyz(i: int, j: int, z: float = 0.0) -> np.ndarray:
@@ -385,14 +374,14 @@ bfs_dist = _bfs_dist
 
 
 
-MAP_SHIFT = LEFT * 2.75 + UP * 0.05
-MAP_SCALE = 0.90
-PANEL_BUFF = 0.55
-Z_MAP = 0
-Z_PANEL = 2
-Z_METRICS = 7
-Z_PATH = 8
-Z_MARKERS = 10
+MAP_SHIFT = LEFT * cs2_pathfinding["MAP_SHIFT_LEFT"] + UP * cs2_pathfinding["MAP_SHIFT_UP"]
+MAP_SCALE = cs2_pathfinding["MAP_SCALE"]
+PANEL_BUFF = cs2_pathfinding["PANEL_BUFF"]
+Z_MAP = cs2_pathfinding["Z_MAP"]
+Z_PANEL = cs2_pathfinding["Z_PANEL"]
+Z_METRICS = cs2_pathfinding["Z_METRICS"]
+Z_PATH = cs2_pathfinding["Z_PATH"]
+Z_MARKERS = cs2_pathfinding["Z_MARKERS"]
 
 
 def _apply_layer_order(scene: Scene, map_body, panel, metrics_layer, path_group, markers) -> None:
@@ -416,24 +405,24 @@ def _place_formula_panel(panel: VGroup, map_body: Mobject) -> VGroup:
 
 
 # ── Palette ────────────────────────────────────────────────────────────────────
-C_BG = "#06080f"
-C_FLOOR = "#1c2838"
-C_WALL = "#2a3548"
-C_WALL_EDGE = "#3d4d66"
-C_START = "#ff4d6d"
-C_GOAL = "#5eead4"
-C_PATH = "#fff7ed"
-C_PANEL = "#0e1420"
-C_PANEL_EDGE = "#2a3a55"
-C_TITLE = "#eef2ff"
-C_SUB = "#94a3b8"
-C_VIS_COOL = "#3de0c8"
-C_VIS_MID = "#f0c040"
-C_VIS_HOT = "#ff6b4a"
-C_EUCL = "#ff5c7a"
+C_BG = cs2_pathfinding["C_BG"]
+C_FLOOR = cs2_pathfinding["C_FLOOR"]
+C_WALL = cs2_pathfinding["C_WALL"]
+C_WALL_EDGE = cs2_pathfinding["C_WALL_EDGE"]
+C_START = cs2_pathfinding["C_START"]
+C_GOAL = cs2_pathfinding["C_GOAL"]
+C_PATH = cs2_pathfinding["C_PATH"]
+C_PANEL = cs2_pathfinding["C_PANEL"]
+C_PANEL_EDGE = cs2_pathfinding["C_PANEL_EDGE"]
+C_TITLE = cs2_pathfinding["C_TITLE"]
+C_SUB = cs2_pathfinding["C_SUB"]
+C_VIS_COOL = cs2_pathfinding["C_VIS_COOL"]
+C_VIS_MID = cs2_pathfinding["C_VIS_MID"]
+C_VIS_HOT = cs2_pathfinding["C_VIS_HOT"]
+C_EUCL = cs2_pathfinding["C_EUCL"]
 
-CELL_2D = 0.52
-CELL_GAP = 0.06
+CELL_2D = cs2_pathfinding["CELL_2D"]
+CELL_GAP = cs2_pathfinding["CELL_GAP"]
 
 
 

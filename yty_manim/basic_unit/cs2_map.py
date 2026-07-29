@@ -13,6 +13,12 @@ import numpy as np
 from manim import *
 from scipy.ndimage import zoom
 
+from yty_manim.disposition.fonts_and_colors import (
+    cs2_bundle_map,
+    cs2_map_heat,
+    cs2_map_physics,
+    cs2_mirage_map,
+)
 from yty_manim.tools.map_editor.map_bundle import ExplosionSource, MapBundle, MapMarker
 from yty_manim.tools.map_editor.map_wave import shockwave_field
 
@@ -116,10 +122,10 @@ cl_bake_bomb_damage_debug 1'''
 def intensity_color(
     t: float,
     *,
-    cool: str = "#4ecdc4",
-    mid: str = "#f7c548",
-    hot: str = "#ff6b35",
-    zero: str | None = "#1a2332",
+    cool: str = cs2_map_heat["C_WAVE_COOL"],
+    mid: str = cs2_map_heat["C_WAVE_MID"],
+    hot: str = cs2_map_heat["C_WAVE_HOT"],
+    zero: str | None = cs2_map_heat["C_WALK"],
 ) -> str:
     """t∈[0,1] → hex；t<=0 时返回 zero（若给定）。"""
     t = float(t)
@@ -151,11 +157,11 @@ BAKED_NPZ = _DATA_DIR / "mirage_baked_site_a.npz"
 BAKED_META = _DATA_DIR / "mirage_baked_site_a_meta.json"
 
 # Grid from radar downsample (128×96)
-GRID_W, GRID_H = 128, 96
+GRID_W, GRID_H = cs2_map_physics["GRID_W"], cs2_map_physics["GRID_H"]
 
 # From baked_bomb_damage pseudocode (arrival = dist / WAVE_SPEED)
-CELL_METERS = 0.625
-WAVE_SPEED_M_S = 27.5
+CELL_METERS = cs2_map_physics["CELL_METERS"]
+WAVE_SPEED_M_S = cs2_map_physics["WAVE_SPEED_M_S"]
 WAVE_SPEED_GRID = WAVE_SPEED_M_S / CELL_METERS
 
 
@@ -454,7 +460,7 @@ _OVERVIEW_PATH = (
     / "de_mirage_overview.txt"
 )
 
-RADAR_SIZE = 1024  # standard CS2 overview texture
+RADAR_SIZE = cs2_map_physics["RADAR_SIZE"]  # standard CS2 overview texture
 
 
 @dataclass(frozen=True)
@@ -541,18 +547,19 @@ MIRAGE_OVERVIEW = load_mirage_overview()
 
 # ── Mirage 矢量地图 ──────────────────────────────────────────
 
-MAP_W, MAP_H = 12.0, 9.0
-C_BG = "#060608"
-C_FLOOR_EDGE = "#4a4a55"
-C_WALK = "#1a2332"
-C_WAVE_HOT = "#ff6b35"
-C_WAVE_MID = "#f7c548"
-C_WAVE_COOL = "#4ecdc4"
-C_GLOW = "#ff3366"
-CELL_GAP = 0.04
-WAVE_UPSAMPLE = 2
-MAX_CONTOUR_PTS = 80
-RADIUS_QUANT = 0.65
+# Mirage 矢量地图默认值（独立 C_BG，避免被 MapBundle 段覆盖）
+MAP_W, MAP_H = cs2_mirage_map["MAP_W"], cs2_mirage_map["MAP_H"]
+C_BG = cs2_mirage_map["C_BG"]
+C_FLOOR_EDGE = cs2_mirage_map["C_FLOOR_EDGE"]
+C_WALK = cs2_mirage_map["C_WALK"]
+C_WAVE_HOT = cs2_mirage_map["C_WAVE_HOT"]
+C_WAVE_MID = cs2_mirage_map["C_WAVE_MID"]
+C_WAVE_COOL = cs2_mirage_map["C_WAVE_COOL"]
+C_GLOW = cs2_mirage_map["C_GLOW"]
+CELL_GAP = cs2_mirage_map["CELL_GAP"]
+WAVE_UPSAMPLE = cs2_mirage_map["WAVE_UPSAMPLE"]
+MAX_CONTOUR_PTS = cs2_mirage_map["MAX_CONTOUR_PTS"]
+RADIUS_QUANT = cs2_mirage_map["RADIUS_QUANT"]
 
 
 def _intensity_color(t: float) -> str:
@@ -758,15 +765,16 @@ def bind_fluid_wave_tracker(mirage: MirageVectorMap, wave_t: ValueTracker) -> Mi
 
 
 
-MAP_W, MAP_H = 12.0, 9.0
-C_BG = "#121216"
-C_FLOOR_EDGE = "#4a4a55"
-C_WALK = "#1a2332"
-C_WAVE_HOT = "#ff6b35"
-C_WAVE_MID = "#f7c548"
-C_WAVE_COOL = "#4ecdc4"
-C_GLOW = "#ff3366"
-CELL_GAP = 0.04
+# MapBundle 视图：使用独立前缀，避免覆盖 Mirage 的 C_BG
+BUNDLE_MAP_W, BUNDLE_MAP_H = cs2_bundle_map["MAP_W"], cs2_bundle_map["MAP_H"]
+BUNDLE_C_BG = cs2_bundle_map["C_BG"]
+BUNDLE_C_FLOOR_EDGE = cs2_bundle_map["C_FLOOR_EDGE"]
+BUNDLE_C_WALK = cs2_bundle_map["C_WALK"]
+BUNDLE_C_WAVE_HOT = cs2_bundle_map["C_WAVE_HOT"]
+BUNDLE_C_WAVE_MID = cs2_bundle_map["C_WAVE_MID"]
+BUNDLE_C_WAVE_COOL = cs2_bundle_map["C_WAVE_COOL"]
+BUNDLE_C_GLOW = cs2_bundle_map["C_GLOW"]
+BUNDLE_CELL_GAP = cs2_bundle_map["CELL_GAP"]
 
 
 
@@ -811,9 +819,9 @@ class GridMapView(VGroup):
         self._ui_font = ui_font
 
         self.bg = Rectangle(
-            width=MAP_W,
-            height=MAP_H,
-            fill_color=C_BG,
+            width=BUNDLE_MAP_W,
+            height=BUNDLE_MAP_H,
+            fill_color=BUNDLE_C_BG,
             fill_opacity=1,
             stroke_color=GREY_B,
             stroke_width=2.0,
@@ -826,12 +834,12 @@ class GridMapView(VGroup):
         self.set_wave_radius(wave_radius)
 
     def _norm_to_scene(self, nx: float, ny: float) -> np.ndarray:
-        return np.array([nx * MAP_W - MAP_W / 2, ny * MAP_H - MAP_H / 2, 0])
+        return np.array([nx * BUNDLE_MAP_W - BUNDLE_MAP_W / 2, ny * BUNDLE_MAP_H - BUNDLE_MAP_H / 2, 0])
 
     def _cell_size(self) -> tuple[float, float]:
         return (
-            MAP_W / self.grid_w * (1.0 - CELL_GAP),
-            MAP_H / self.grid_h * (1.0 - CELL_GAP),
+            BUNDLE_MAP_W / self.grid_w * (1.0 - BUNDLE_CELL_GAP),
+            BUNDLE_MAP_H / self.grid_h * (1.0 - BUNDLE_CELL_GAP),
         )
 
     def _cell_center_norm(self, i: int, j: int) -> tuple[float, float]:
@@ -845,7 +853,7 @@ class GridMapView(VGroup):
         *,
         opacity: float = 1.0,
         stroke_width: float = 0.0,
-        stroke_color: str = C_GLOW,
+        stroke_color: str = BUNDLE_C_GLOW,
     ) -> Rectangle:
         cw, ch = self._cell_size()
         rect = Rectangle(
@@ -877,7 +885,7 @@ class GridMapView(VGroup):
                     continue
                 rect = self._make_cell_rect(
                     i, j, self._floor_color(i, j),
-                    opacity=0.94, stroke_width=0.35, stroke_color=C_FLOOR_EDGE,
+                    opacity=0.94, stroke_width=0.35, stroke_color=BUNDLE_C_FLOOR_EDGE,
                 )
                 cells.add(rect)
         return cells
@@ -889,7 +897,7 @@ class GridMapView(VGroup):
             for i in range(self.grid_w):
                 if not self.bundle.walkable[j, i]:
                     continue
-                rect = self._make_cell_rect(i, j, C_WALK, opacity=0.0, stroke_width=0.0)
+                rect = self._make_cell_rect(i, j, BUNDLE_C_WALK, opacity=0.0, stroke_width=0.0)
                 cells.add(rect)
                 index[(i, j)] = rect
         return cells, index
@@ -902,7 +910,7 @@ class GridMapView(VGroup):
                 if not self.bundle.walkable[j, i]:
                     continue
                 rect = self._make_cell_rect(
-                    i, j, C_GLOW, opacity=0.0, stroke_width=0.0, stroke_color=C_GLOW,
+                    i, j, BUNDLE_C_GLOW, opacity=0.0, stroke_width=0.0, stroke_color=BUNDLE_C_GLOW,
                 )
                 cells.add(rect)
                 index[(i, j)] = rect
@@ -969,7 +977,7 @@ class GridMapView(VGroup):
             if not np.isfinite(d) or abs(d - radius) > band:
                 rect.set_stroke(width=0.0, opacity=0.0)
                 continue
-            rect.set_stroke(color=C_GLOW, width=2.4, opacity=0.95)
+            rect.set_stroke(color=BUNDLE_C_GLOW, width=2.4, opacity=0.95)
 
     def refresh_overlay(self) -> None:
         new_overlay = self._build_overlay_markers()

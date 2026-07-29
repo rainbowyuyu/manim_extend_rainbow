@@ -25,6 +25,7 @@ yty_manim
 ├── [examples.ipynb](examples/examples.ipynb)  
 ├── [disposition](yty_manim%2Fdisposition)  
 │ ├── [speed_rate_fuc.py](yty_manim%2Fdisposition%2Fspeed_rate_fuc.py)  
+│ ├── [speed_rate_fuc.md](yty_manim%2Fdisposition%2Fspeed_rate_fuc.md)  
 │ └── [fonts_and_colors.py](yty_manim%2Fdisposition%2Ffonts_and_colors.py)  
 ├── [basic_unit](yty_manim%2Fbasic_unit)  
 │ ├── [squ_tex.py](yty_manim%2Fbasic_unit%2Fsqu_tex.py)  
@@ -50,6 +51,36 @@ video_project
   ├── [cs2_c4_data](video_project%2Fcs2_c4%2Fcs2_c4_data)  
   ├── [cs2_c4_edit](video_project%2Fcs2_c4%2Fcs2_c4_edit)  
   └── [cs2_c4_footage](video_project%2Fcs2_c4%2Fcs2_c4_footage)  
+
+---
+
+# disposition
+
+---
+
+## speed_rate_fuc.py
+
+Manim `rate_func` 缓动曲线集合（多项式 / sine·expo·circ / back·elastic·bounce / 往返抖动等）。
+
+完整说明、选用建议与每条曲线的示例 GIF：  
+→ **[speed_rate_fuc.md](yty_manim/disposition/speed_rate_fuc.md)**
+
+```python
+from yty_manim.disposition.speed_rate_fuc import ease_in_out_cubic, rate_presets
+
+self.play(mob.animate.shift(RIGHT), rate_func=ease_in_out_cubic)
+self.play(..., rate_func=rate_presets["ease_out_back"])
+```
+
+重新渲染示例动画：
+
+```bash
+python examples/render_speed_rate_gifs.py
+```
+
+## fonts_and_colors.py
+
+字体列表、渐变色板、`typedict` 形状样式，以及 CS2 相关默认颜色（`cs2_arena_3d` / `cs2_damage` / `cs2_mirage_map` 等）。
 
 ---
 
